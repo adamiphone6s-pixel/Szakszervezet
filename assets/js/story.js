@@ -170,13 +170,25 @@
     res.x = o.x; res.y = o.y; res.s = 1.9 * o.k; res.a = 0.45 + (1 - (o.z + 1) / 2) * 0.55;
   }
 
-  /* ---------- Görgetési állapot ---------- */
-  let f = 0;
-  function readScroll() {
-    const mid = window.innerHeight / 2, c = steps.map((s) => { const r = s.getBoundingClientRect(); return r.top + r.height / 2; });
-    if (mid <= c[0]) { f = 0; return; }
-    for (let k = 0; k < c.length - 1; k++) if (mid <= c[k + 1]) { f = k + (mid - c[k]) / (c[k + 1] - c[k]); return; }
-    f = c.length - 1;
+  /* ---------- Idővonal: magától fut, görgetéstől független ----------
+     Minden fejezet HOLD másodpercig áll, majd TRANS alatt átúszik a következőbe.
+     Az utolsó után visszatér az elejére. Csak akkor telik, ha a szekció látszik. */
+  const HOLD = reduce ? 7 : 5.2, HOLD_LAST = reduce ? 10 : 9, TRANS = reduce ? 0.6 : 3.4;
+  const last = steps.length - 1;
+  let cur = 0, nxt = 1, clock = 0;   // clock: az aktuális fejezetben eltelt idő
+  function holdOf(i) { return i === last ? HOLD_LAST : HOLD; }
+  function tick(dt) {
+    // Szünetben az álló fejezet nem lép tovább; egy elkezdett átúszás végigmegy.
+    if (paused && clock < holdOf(cur)) return;
+    clock += dt;
+    if (clock >= holdOf(cur) + TRANS) { cur = nxt; nxt = cur === last ? 0 : cur + 1; clock = 0; }
+  }
+  // Ugrás egy fejezetre (pöttyre kattintva): rögtön átúszik oda
+  function jump(i) {
+    if (i === cur && clock < holdOf(cur)) return;
+    if (clock >= holdOf(cur)) cur = nxt;   // épp átmenetben volt: a célból indulunk tovább
+    nxt = i; clock = holdOf(cur);
+    if (nxt === cur) { clock = 0; nxt = cur === last ? 0 : cur + 1; }
   }
   const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
   const smooth = (a, b, v) => { const x = clamp((v - a) / (b - a), 0, 1); return x * x * (3 - 2 * x); };
@@ -192,30 +204,39 @@
 
   /* ---------- Rajzolás ---------- */
   const A = { x: 0, y: 0, s: 0, a: 0 }, B = { x: 0, y: 0, s: 0, a: 0 };
-  let lastActive = -1;
+  let lastActive = -1, lastNow = 0;
   function frame(now) {
+    const dt = lastNow ? Math.min(0.1, (now - lastNow) / 1000) : 0;
+    lastNow = now;
+    tick(dt);
     const time = reduce ? 0 : now / 1000;
-    readScroll();
-    const k = Math.min(Math.floor(f), steps.length - 1), local = f - k;
-    const next = Math.min(k + 1, steps.length - 1);
-    const tm = reduce ? (local < 0.5 ? 0 : 1) : smooth(0.3, 0.8, local);
+    const k = cur, next = nxt;
+    const local = clamp((clock - holdOf(cur)) / TRANS, 0, 1);   // 0 = áll, 0→1 = átúszás
+    const tm = reduce ? (local < 0.5 ? 0 : 1) : local;
+    const te = smooth(0, 1, local);
+    const weight = (i) => (i === k ? 1 - te : 0) + (i === next ? te : 0);
 
-    // Szövegpanelek
+    // Szövegpanelek: a régi felfelé halványul, az új alulról érkezik
     texts.forEach((el, i) => {
-      const d = f - i, o = clamp(1 - Math.abs(d) * 1.7, 0, 1);
-      el.style.opacity = o.toFixed(3);
-      el.style.transform = reduce ? "" : "translate3d(0," + (-d * 36).toFixed(1) + "px,0)";
-      el.style.visibility = o < 0.02 ? "hidden" : "visible";
+      let o = 0, d = 0;
+      if (i === k) { o = clamp(1 - local * 1.8, 0, 1); d = local; }
+      if (i === next && local > 0) { o = Math.max(o, clamp((local - 0.4) / 0.6, 0, 1)); d = -(1 - clamp((local - 0.4) / 0.6, 0, 1)); }
+      if (i === k && i === next) { o = 1; d = 0; }
+      const oe = o * o * (3 - 2 * o);
+      el.style.opacity = oe.toFixed(3);
+      el.style.transform = reduce ? "" : "translate3d(0," + (-d * 28).toFixed(1) + "px,0)";
+      el.style.visibility = oe < 0.02 ? "hidden" : "visible";
+      el.style.pointerEvents = oe > 0.5 ? "auto" : "none";
     });
-    const active = Math.round(f);
-    if (active !== lastActive) { dots.forEach((d, i) => d.classList.toggle("on", i === active)); lastActive = active; }
-    if (f > 0.55) countUp();
+    const active = local > 0.5 ? next : k;
+    if (active !== lastActive) { dots.forEach((d, i) => { d.classList.toggle("on", i === active); d.setAttribute("aria-current", i === active ? "step" : "false"); }); lastActive = active; }
+    if (active === 1) countUp();
 
     ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
     ctx.clearRect(0, 0, W, H);
 
     // Gyűrűk (3. fejezet): ágazati és országos szövetség
-    const wR = clamp(1 - Math.abs(f - 3) * 1.5, 0, 1);
+    const wR = weight(3);
     if (wR > 0.01) drawRings(time, wR);
     else if (legend) legend.style.opacity = "0";
 
@@ -242,8 +263,9 @@
     ctx.globalAlpha = 1;
 
     // Az új tag (utolsó fejezet): egy pont beérkezik és csatlakozik
-    const w5 = clamp((f - (steps.length - 2) - 0.35) / 0.6, 0, 1);
-    if (w5 > 0) drawNewcomer(time, ease(w5));
+    let w5 = 0, fade5 = 1;
+    if (k === last) { w5 = clamp((clock - 0.6) / 3.2, 0, 1); fade5 = 1 - te; }
+    if (w5 > 0 && fade5 > 0.01) { ctx.save(); ctx.globalAlpha = fade5; drawNewcomer(time, ease(w5), fade5); ctx.restore(); }
     ctx.globalCompositeOperation = "source-over";
   }
 
@@ -275,7 +297,7 @@
     }
   }
 
-  function drawNewcomer(time, w) {
+  function drawNewcomer(time, w, fade) {
     const o = proj([0.18, -0.12, -1], time * 0.11, 0.38, 1);
     const tx = o.x, ty = o.y;
     const sx = wide ? cx - W * 0.42 : W * 0.08, sy = H * (wide ? 0.95 : 0.72);
@@ -283,12 +305,12 @@
     const at = (u) => [(1 - u) * (1 - u) * sx + 2 * (1 - u) * u * qx + u * u * tx, (1 - u) * (1 - u) * sy + 2 * (1 - u) * u * qy + u * u * ty];
     for (let j = 10; j >= 0; j--) {
       const u = Math.max(0, w - j * 0.025), p = at(u), s = (7 - j * 0.5) * (j ? 1 : 1.4);
-      ctx.globalAlpha = (1 - j / 11) * (j ? 0.5 : 1);
+      ctx.globalAlpha = (1 - j / 11) * (j ? 0.5 : 1) * fade;
       ctx.drawImage(SPR_ACC, p[0] - s * 2, p[1] - s * 2, s * 4, s * 4);
     }
     if (w >= 1) {
       const pulse = reduce ? 0.5 : (Math.sin(time * 2.4) + 1) / 2, p = at(1);
-      ctx.globalAlpha = 0.5 * (1 - pulse);
+      ctx.globalAlpha = 0.5 * (1 - pulse) * fade;
       ctx.strokeStyle = "rgba(82,191,165,1)"; ctx.lineWidth = 1.5;
       ctx.beginPath(); ctx.arc(p[0], p[1], 12 + pulse * 22, 0, Math.PI * 2); ctx.stroke();
     }
@@ -299,6 +321,18 @@
   let running = false, raf = 0;
   const loop = (now) => { frame(now); raf = running ? requestAnimationFrame(loop) : 0; };
   sec.classList.add("story--js");
+
+  // Pöttyök: kattintásra az adott fejezetre úszik
+  const dotBox = sec.querySelector(".story-dots");
+  if (dotBox) dotBox.addEventListener("click", (e) => { const i = dots.indexOf(e.target.closest("i")); if (i >= 0) jump(i); });
+
+  // Megáll, amíg a látogató a szöveg fölött van vagy a gombokon áll (olvasás, kattintás)
+  let paused = false;
+  const stepsBox = sec.querySelector(".story-steps");
+  stepsBox.addEventListener("pointerover", (e) => { paused = !!e.target.closest(".story-cta"); });
+  stepsBox.addEventListener("pointerleave", () => { paused = false; });
+  sec.addEventListener("focusin", () => { paused = true; });
+  sec.addEventListener("focusout", () => { paused = false; });
   layout();
   if ("ResizeObserver" in window) new ResizeObserver(layout).observe(stage); else addEventListener("resize", layout);
   new IntersectionObserver((en) => {

@@ -1468,3 +1468,14 @@ input.in[type="color"] { padding: 6px; height: 46px; cursor: pointer; }
 .wz-count:empty { display: none; }
 .no-js .wz-hero-link { display: none; }
 .wz-hero-link { margin-top: 28px; }
+
+/* „720 pont”: magától futó változat (JS-sel). Egy képernyőnyi szekció, a fejezetek egymásra rétegezve. */
+.story--js { height: 100vh; height: 100svh; min-height: 560px; overflow: hidden; }
+.story--js .story-stage { position: absolute; inset: 0; height: auto; margin: 0; }
+.story--js .story-steps { position: absolute; inset: 0; margin-inline: auto; width: 100%; pointer-events: none; }
+.story--js .story-step { position: absolute; inset: 0; min-height: 0; padding-inline: var(--gutter); pointer-events: none; }
+.story--js .story-dots { pointer-events: auto; }
+.story--js .story-dots i { cursor: pointer; position: relative; }
+.story--js .story-dots i::after { content: ""; position: absolute; inset: -8px; }
+.story--js .story-dots i:hover { background: rgba(238, 248, 244, .5); }
+.story--js .story-dots i.on:hover { background: var(--accent); }
