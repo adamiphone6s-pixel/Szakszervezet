@@ -1525,3 +1525,34 @@ input.in[type="color"] { padding: 6px; height: 46px; cursor: pointer; }
 .cta-next .story-num { color: var(--accent); }
 .cta-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
 .cta .cta-actions { margin-top: 48px; }
+
+/* ---------- Telepítési útmutató (PWA) ---------- */
+.pwa-guide { position: fixed; inset: 0; z-index: 300; display: flex; align-items: flex-end; justify-content: center; padding: 12px 12px calc(12px + env(safe-area-inset-bottom)); background: rgba(6, 22, 28, 0); backdrop-filter: blur(0); -webkit-backdrop-filter: blur(0); visibility: hidden; transition: background .35s ease, backdrop-filter .35s ease, visibility 0s linear .35s; }
+.pwa-guide.is-open { visibility: visible; background: rgba(6, 22, 28, .62); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); transition: background .35s ease, backdrop-filter .35s ease; }
+.pwa-guide[data-arrow] .pwa-card { margin-bottom: 64px; }
+.pwa-guide[data-arrow=""] .pwa-card { margin-bottom: 0; }
+.pwa-card { position: relative; width: 100%; max-width: 440px; max-height: calc(100svh - 96px); overflow: auto; padding: 26px 22px 22px; border-radius: 28px; color: var(--on-ink); background: radial-gradient(120% 80% at 50% 0%, #1d4a57 0%, var(--ink) 62%); border: 1px solid rgba(255, 255, 255, .08); box-shadow: 0 30px 80px -20px rgba(0, 0, 0, .6), inset 0 1px 0 rgba(255, 255, 255, .08); transform: translateY(40px) scale(.98); opacity: 0; transition: transform .5s cubic-bezier(.2, .9, .25, 1), opacity .3s ease; }
+.pwa-guide.is-open .pwa-card { transform: none; opacity: 1; }
+.pwa-x { position: absolute; top: 12px; right: 12px; width: 36px; height: 36px; border-radius: 50%; border: 0; background: rgba(255, 255, 255, .08); color: var(--on-ink); font-size: 22px; line-height: 1; cursor: pointer; }
+.pwa-app { display: block; width: 56px; height: 56px; padding: 6px; border-radius: 16px; background: rgba(255, 255, 255, .06); border: 1px solid rgba(255, 255, 255, .1); margin-bottom: 16px; }
+.pwa-app img { width: 44px; height: 44px; border-radius: 11px; display: block; }
+.pwa-title { font-family: var(--font-display); font-weight: 800; font-size: 24px; letter-spacing: -.03em; line-height: 1.1; margin: 0 40px 8px 0; }
+.pwa-lead { color: var(--on-ink-muted); font-size: 15px; line-height: 1.5; margin-bottom: 18px; }
+.pwa-steps { list-style: none; padding: 0; margin: 0 0 20px; display: grid; gap: 8px; counter-reset: none; }
+.pwa-steps li { display: grid; grid-template-columns: 28px 1fr 40px; align-items: center; gap: 12px; padding: 12px 12px 12px 14px; border-radius: 16px; background: rgba(255, 255, 255, .045); border: 1px solid rgba(255, 255, 255, .07); font-size: 15px; line-height: 1.4; opacity: 0; transform: translateY(10px); transition: opacity .4s ease, transform .5s cubic-bezier(.2, .9, .25, 1); transition-delay: calc(.12s + var(--i) * .08s); }
+.pwa-guide.is-open .pwa-steps li { opacity: 1; transform: none; }
+.pwa-steps b { color: #fff; font-weight: 700; }
+.pwa-num { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: 13px; color: var(--ink); background: var(--accent); }
+.pwa-ico { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; color: #4da3ff; background: rgba(77, 163, 255, .12); }
+.pwa-ico svg { width: 22px; height: 22px; }
+.pwa-card .btn { gap: 10px; }
+.pwa-card .btn svg { width: 20px; height: 20px; flex: none; }
+.pwa-fallback { margin-top: 16px; padding-top: 16px; border-top: 1px solid rgba(255, 255, 255, .08); }
+.pwa-fallback p { color: var(--on-ink-muted); font-size: 14px; line-height: 1.5; margin-bottom: 12px; }
+.pwa-fallback .btn--line { color: var(--on-ink); border-color: rgba(255, 255, 255, .25); }
+.pwa-arrow { position: fixed; bottom: calc(8px + env(safe-area-inset-bottom)); left: 50%; width: 44px; height: 44px; margin-left: -22px; border-radius: 50%; display: grid; place-items: center; color: var(--ink); background: var(--accent); box-shadow: 0 0 0 8px rgba(82, 191, 165, .18); opacity: 0; transition: opacity .3s ease .4s; animation: pwaBob 1.4s ease-in-out infinite; }
+.pwa-arrow svg { width: 24px; height: 24px; }
+.pwa-guide[data-arrow="right"] .pwa-arrow { left: auto; right: 22px; margin-left: 0; }
+.pwa-guide.is-open .pwa-arrow { opacity: 1; }
+@keyframes pwaBob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(8px); } }
+@media (prefers-reduced-motion: reduce) { .pwa-arrow { animation: none; } .pwa-card, .pwa-steps li { transition: opacity .2s ease; transform: none; } }

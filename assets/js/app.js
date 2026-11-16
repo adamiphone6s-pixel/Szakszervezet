@@ -678,45 +678,154 @@
   }
 
   /* ================= PWA ================= */
-  function showInstallSteps(ios, otherBrowser) {
-    let panel = document.querySelector(".ios-install");
+  // Telepítés: Android/Chrome → natív prompt; iPhone Safari → lépésenkénti útmutató;
+  // iPhone más böngészőben / beépített böngészőben (Messenger, Gmail…) → átdob Safariba (x-safari-https://, iOS 17+),
+  // ahol a ?install=1 miatt az útmutató magától megnyílik.
+  const UA = navigator.userAgent;
+  const IOS = /iphone|ipad|ipod/i.test(UA) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  const IPAD = IOS && !/iphone|ipod/i.test(UA);
+  const ANDROID = /android/i.test(UA);
+  const IOS_OTHER = IOS && (/CriOS|FxiOS|EdgiOS|OPiOS|OPT\/|DuckDuckGo|GSA\/|YaBrowser|FBAN|FBAV|FB_IAB|Instagram|LinkedInApp|Line\/|Twitter|Snapchat|TikTok|musical_ly|Messenger|Pinterest|GoogleApp/i.test(UA) || !/Safari\//.test(UA));
+  const ANDROID_INAPP = ANDROID && /FBAN|FBAV|FB_IAB|Instagram|LinkedInApp|Line\/|Snapchat|TikTok|musical_ly|; wv\)/i.test(UA);
+  const SAFARI_V = (() => { const m = UA.match(/Version\/(\d+)/); return m ? +m[1] : 0; })();
+
+  const SVG = {
+    share: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M8 7l4-4 4 4"/><path d="M6 11H5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1h-1"/></svg>',
+    more: '<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>',
+    add: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><rect x="3.5" y="3.5" width="17" height="17" rx="4"/><path d="M12 8v8M8 12h8"/></svg>',
+    check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+    toggle: '<svg viewBox="0 0 24 24" fill="none"><rect x="2" y="6" width="20" height="12" rx="6" fill="currentColor" opacity=".35"/><circle cx="16" cy="12" r="4.4" fill="currentColor"/></svg>',
+    safari: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></svg>',
+    menu: '<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>',
+    link: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 10a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg>'
+  };
+
+  function installUrl() {
+    const u = new URL(location.href);
+    u.searchParams.set("install", "1");
+    u.hash = "";
+    return u.toString();
+  }
+
+  function guidePanel() {
+    let panel = document.querySelector(".pwa-guide");
     if (!panel) {
       panel = document.createElement("div");
-      panel.className = "ios-install";
+      panel.className = "pwa-guide";
+      panel.setAttribute("role", "dialog");
+      panel.setAttribute("aria-modal", "true");
       panel.addEventListener("click", (e) => {
-        if (e.target === panel || e.target.closest(".ios-install-close")) panel.classList.remove("is-open");
+        if (e.target === panel || e.target.closest("[data-pwa-close]")) closeGuide();
       });
+      document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeGuide(); });
       document.body.appendChild(panel);
     }
-    const k = ios ? "install.ios" : "install.any";
-    const steps = [t(k + ".s1"), t(k + ".s2"), t(k + ".s3")];
-    if (otherBrowser) steps.unshift(t("install.ios.openSafari"));
+    return panel;
+  }
+  function closeGuide() {
+    const p = document.querySelector(".pwa-guide");
+    if (p) p.classList.remove("is-open");
+  }
+  function openGuide(html, arrow) {
+    const panel = guidePanel();
+    panel.dataset.arrow = arrow || "";
     panel.innerHTML =
-      '<div class="ios-install-card"><p class="ios-install-title">' + t(k + ".title") + "</p>" +
-      "<ol>" + steps.map((s) => "<li>" + s + "</li>").join("") + "</ol>" +
-      '<button type="button" class="btn btn--volt btn--block ios-install-close">' + t(k + ".close") + "</button></div>";
+      '<div class="pwa-card"><button type="button" class="pwa-x" data-pwa-close aria-label="' + t("install.close") + '">×</button>' + html + "</div>" +
+      (arrow ? '<div class="pwa-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v15M6 13l6 6 6-6"/></svg></div>' : "");
     requestAnimationFrame(() => panel.classList.add("is-open"));
+    const first = panel.querySelector(".pwa-card button:not(.pwa-x), .pwa-card a");
+    if (first && !matchMedia("(pointer: coarse)").matches) setTimeout(() => first.focus({ preventScroll: true }), 50);
+  }
+  const head = (k) => '<span class="pwa-app"><img src="assets/img/icon-192.png" alt="" width="44" height="44"></span><p class="pwa-title">' + t(k + ".title") + '</p><p class="pwa-lead">' + t(k + ".lead") + "</p>";
+  const stepList = (steps) =>
+    '<ol class="pwa-steps">' + steps.map((s, i) =>
+      '<li style="--i:' + i + '"><span class="pwa-num">' + (i + 1) + '</span><span class="pwa-txt">' + s[1] + '</span><span class="pwa-ico">' + SVG[s[0]] + "</span></li>").join("") + "</ol>";
+
+  // 1) iPhone Safari: a valódi telepítési lépések, az iOS-verziónak megfelelően
+  function showSafariGuide() {
+    const modern = SAFARI_V >= 26; // iOS 26: a Megosztás a ⋯ menü alatt van
+    const steps = IPAD
+      ? [["share", t("install.ipad.s1")], ["add", t("install.ios.s2")], ["check", t("install.ios.s3")]]
+      : modern
+        ? [["more", t("install.ios26.s1")], ["share", t("install.ios26.s2")], ["add", t("install.ios26.s3")], ["toggle", t("install.ios26.s4")]]
+        : [["share", t("install.ios.s1")], ["add", t("install.ios.s2")], ["check", t("install.ios.s3")]];
+    openGuide(head("install.ios") + stepList(steps) +
+      '<button type="button" class="btn btn--volt btn--block" data-pwa-close>' + t("install.ok") + "</button>",
+      IPAD ? "" : modern ? "right" : "center");
+  }
+
+  // 2) iPhone, nem Safari: átdobás Safariba, tartalék: link másolása
+  function showOpenInSafari() {
+    const url = installUrl();
+    openGuide(head("install.safari") +
+      '<a class="btn btn--volt btn--block pwa-go" href="x-safari-' + url + '">' + SVG.safari + "<span>" + t("install.safari.btn") + "</span></a>" +
+      '<div class="pwa-fallback" hidden><p>' + t("install.safari.fallback") + "</p>" +
+      '<button type="button" class="btn btn--line btn--block pwa-copy">' + SVG.link + "<span>" + t("install.copy") + "</span></button></div>");
+    const panel = guidePanel();
+    const go = panel.querySelector(".pwa-go");
+    const fb = panel.querySelector(".pwa-fallback");
+    go.addEventListener("click", () => {
+      // Ha az app nem engedi átváltani (az oldal látható marad), megmutatjuk a kézi utat
+      setTimeout(() => { if (!document.hidden) fb.hidden = false; }, 1400);
+    });
+    panel.querySelector(".pwa-copy").addEventListener("click", async (e) => {
+      const b = e.currentTarget;
+      try { await navigator.clipboard.writeText(location.origin + location.pathname); }
+      catch (x) {
+        const ta = document.createElement("textarea"); ta.value = location.origin + location.pathname;
+        document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); } catch (y) {} ta.remove();
+      }
+      b.querySelector("span").textContent = t("install.copied");
+    });
+  }
+
+  // 3) Android beépített böngésző (Messenger, Instagram…): átdobás Chrome-ba
+  function showOpenInChrome() {
+    const u = new URL(installUrl());
+    const intent = "intent://" + u.host + u.pathname + u.search + "#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=" + encodeURIComponent(u.toString()) + ";end";
+    openGuide(head("install.chrome") +
+      '<a class="btn btn--volt btn--block" href="' + intent + '">' + t("install.chrome.btn") + "</a>");
+  }
+
+  // 4) Egyéb böngésző natív prompt nélkül
+  function showGenericGuide() {
+    openGuide(head("install.any") +
+      stepList([["menu", t("install.any.s1")], ["add", t("install.any.s2")], ["check", t("install.any.s3")]]) +
+      '<button type="button" class="btn btn--volt btn--block" data-pwa-close>' + t("install.ok") + "</button>");
   }
 
   function initPWA() {
     if ("serviceWorker" in navigator && location.protocol !== "file:") navigator.serviceWorker.register("sw.js").catch(() => {});
+    const params = new URLSearchParams(location.search);
+    const fromRedirect = params.has("install");
+    if (fromRedirect) {
+      params.delete("install");
+      const q = params.toString();
+      history.replaceState(null, "", location.pathname + (q ? "?" + q : "") + location.hash);
+    }
     if (matchMedia("(display-mode: standalone)").matches || navigator.standalone === true) {
       document.querySelectorAll(".install-link").forEach((b) => b.remove());
       return;
     }
-    const ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
     let deferred = null;
     document.querySelectorAll(".install-link").forEach((b) => (b.hidden = false));
-    addEventListener("beforeinstallprompt", (e) => {
-      e.preventDefault();
-      deferred = e;
-    });
+    addEventListener("beforeinstallprompt", (e) => { e.preventDefault(); deferred = e; });
+    addEventListener("appinstalled", () => { closeGuide(); document.querySelectorAll(".install-link").forEach((b) => b.remove()); });
+
+    function start() {
+      if (deferred) { deferred.prompt(); deferred = null; return; }
+      if (IOS_OTHER) return showOpenInSafari();
+      if (IOS) return showSafariGuide();
+      if (ANDROID_INAPP) return showOpenInChrome();
+      showGenericGuide();
+    }
     document.addEventListener("click", (e) => {
       const btn = e.target.closest && e.target.closest(".install-link");
-      if (!btn) return;
-      if (deferred) { deferred.prompt(); deferred = null; return; }
-      showInstallSteps(ios, ios && /CriOS|FxiOS|EdgiOS|OPiOS|FBAN|FBAV|Instagram/i.test(navigator.userAgent));
+      if (btn) start();
     });
+    // Safariba átdobva: az útmutató magától megnyílik
+    if (fromRedirect && IOS && !IOS_OTHER) setTimeout(showSafariGuide, 900);
+    else if (fromRedirect && ANDROID && !ANDROID_INAPP) setTimeout(() => openGuide(head("install.any") + '<button type="button" class="btn btn--volt btn--block install-link">' + t("footer.install") + "</button>"), 1200);
   }
 
   /* ================= Indítás ================= */
