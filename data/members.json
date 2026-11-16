@@ -2,6 +2,12 @@
   "_info": "CSAK DEMÓ! Éles rendszerben a tagi hitelesítés szerveroldalon történik, ez a fájl ott nem létezik. hash = SHA-256('TAGKÓD:jelszó').",
   "members": [
     {
+      "code": "DEMO",
+      "name": "Demó Kolléga",
+      "company": "chinoin",
+      "hash": "835fa79324880db1d8e1664153bcb7d40153a464812065a3ff5a1d1fad9a793b"
+    },
+    {
       "code": "CH-1001",
       "name": "Kolléga",
       "company": "chinoin",

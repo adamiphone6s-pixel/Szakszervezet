@@ -215,7 +215,7 @@ window.I18N = {
     "login.forgot": "Elfelejtetted? Keresd a vállalati bizalmidat vagy írj nekünk.",
     "login.notmember": "Még nem vagy tag?",
     "login.demo.t": "Demó hozzáférések",
-    "login.demo.d": "A bemutatóhoz használd valamelyik kódot, jelszó: demo1234",
+    "login.demo.d": "Tagi kód: DEMO (vagy bármelyik vállalati kód), jelszó: demo1234",
     "login.show": "Jelszó mutatása",
 
     "portal.hello": "Szia,",
@@ -797,7 +797,7 @@ window.I18N = {
     "login.forgot": "Forgot it? Ask your shop steward or write to us.",
     "login.notmember": "Not a member yet?",
     "login.demo.t": "Demo access",
-    "login.demo.d": "Use any of these codes for the demo, password: demo1234",
+    "login.demo.d": "Member code: DEMO (or any company code), password: demo1234",
     "login.show": "Show password",
 
     "portal.hello": "Hi,",
