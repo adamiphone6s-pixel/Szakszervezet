@@ -102,22 +102,35 @@
   let W = 0, H = 0, DPR = 1, cx = 0, cy = 0, S = 1, wide = true;
   function layout() {
     const r = stage.getBoundingClientRect();
-    DPR = Math.min(window.devicePixelRatio || 1, wide ? 2 : 1.6);
     W = r.width; H = r.height;
     wide = W >= 900;
+    // Éles pontok: a kijelző valódi felbontásán rajzolunk (max. 2x), retinán is.
+    DPR = Math.min(Math.max(window.devicePixelRatio || 1, 1), 2);
     canvas.width = Math.round(W * DPR); canvas.height = Math.round(H * DPR);
     if (wide) { cx = W * 0.64; cy = H * 0.52; S = Math.min(W * 0.21, H * 0.33); }
     else { cx = W / 2; cy = H * 0.34; S = Math.min(W * 0.4, H * 0.22); }
   }
 
   // Pont-sprite: lágy fény, két színben
-  function sprite(color) {
-    const c = document.createElement("canvas"); c.width = c.height = 64;
-    const g = c.getContext("2d"), gr = g.createRadialGradient(32, 32, 0, 32, 32, 32);
-    gr.addColorStop(0, "rgba(255,255,255,1)"); gr.addColorStop(0.18, color); gr.addColorStop(0.45, color.replace(/[\d.]+\)$/, "0.25)")); gr.addColorStop(1, "rgba(0,0,0,0)");
-    g.fillStyle = gr; g.fillRect(0, 0, 64, 64); return c;
+  // Nagy felbontású forrás: éles, fehéren izzó mag + halvány fényudvar.
+  const SP = 128;
+  function sprite(rgb) {
+    const c = document.createElement("canvas"); c.width = c.height = SP;
+    const g = c.getContext("2d"), h = SP / 2, gr = g.createRadialGradient(h, h, 0, h, h, h);
+    const col = (a) => "rgba(" + rgb + "," + a + ")";
+    gr.addColorStop(0, "rgba(255,255,255,1)");
+    gr.addColorStop(0.1, "rgba(255,255,255,0.98)");
+    gr.addColorStop(0.19, col(0.95));
+    gr.addColorStop(0.27, col(0.36));
+    gr.addColorStop(0.45, col(0.11));
+    gr.addColorStop(0.7, col(0.025));
+    gr.addColorStop(1, col(0));
+    g.fillStyle = gr; g.fillRect(0, 0, SP, SP); return c;
   }
-  const SPR = sprite("rgba(191,233,221,0.95)"), SPR_ACC = sprite("rgba(82,191,165,1)");
+  const SPR = sprite("200,238,228"), SPR_ACC = sprite("82,191,165");
+  // Pontonkénti apró eltérés (méret, pislákolás), hogy élőbb legyen a felhő
+  const jit = new Float32Array(N), tw = new Float32Array(N);
+  for (let i = 0; i < N; i++) { jit[i] = 0.78 + rnd() * 0.44; tw[i] = rnd() * 6.283; }
   const accentIdx = new Uint8Array(N); for (let i = 0; i < N; i++) accentIdx[i] = rnd() < 0.16 ? 1 : 0;
 
   /* ---------- Vetítés ---------- */
@@ -206,6 +219,7 @@
     if (wR > 0.01) drawRings(time, wR);
     else if (legend) legend.style.opacity = "0";
 
+    ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = "high";
     ctx.globalCompositeOperation = "lighter";
     const R = 110;
     for (let i = 0; i < N; i++) {
@@ -221,8 +235,8 @@
       if (px > -9000) { const dx = x - px, dy = y - py, d2 = dx * dx + dy * dy; if (d2 < R * R) { const d = Math.sqrt(d2) || 1, push = (1 - d / R) * 26; tx = (dx / d) * push; ty = (dy / d) * push; } }
       offX[i] += (tx - offX[i]) * 0.12; offY[i] += (ty - offY[i]) * 0.12;
       x += offX[i]; y += offY[i];
-      const r = s * 2.6;
-      ctx.globalAlpha = clamp(a, 0, 1);
+      const r = s * 3.5 * jit[i];
+      ctx.globalAlpha = clamp(a * (reduce ? 1 : 0.86 + 0.14 * Math.sin(time * 1.3 + tw[i])), 0, 1);
       ctx.drawImage(accentIdx[i] ? SPR_ACC : SPR, x - r, y - r, r * 2, r * 2);
     }
     ctx.globalAlpha = 1;
