@@ -467,62 +467,7 @@
     document.addEventListener("langchange", () => els.forEach((el) => { if (el.textContent !== "0") el.textContent = final(el); }));
   }
 
-  /* ================= Kurzor, mágnes, dőlés ================= */
-  function initCursor() {
-    if (!finePointer || reduceMotion) return;
-    const ring = document.createElement("div");
-    ring.className = "cursor";
-    ring.innerHTML = "<i></i><b></b>";
-    const dot = document.createElement("div");
-    dot.className = "cursor-dot";
-    document.body.append(ring, dot);
-    const label = ring.querySelector("b");
-    let mx = -100, my = -100, rx = -100, ry = -100, shown = false;
-    addEventListener("pointermove", (e) => {
-      mx = e.clientX; my = e.clientY;
-      if (!shown) { shown = true; rx = mx; ry = my; document.documentElement.classList.add("has-cursor"); }
-      const target = e.target.closest ? e.target : null;
-      const lab = target && target.closest("[data-cursor]");
-      const link = target && target.closest("a, button, summary, label, [role=tab], select");
-      const field = target && target.closest("input, textarea, select");
-      ring.classList.toggle("is-label", !!lab);
-      ring.classList.toggle("is-link", !lab && !!link);
-      ring.classList.toggle("is-hidden", !!field);
-      dot.classList.toggle("is-hidden", !!field);
-      if (lab) label.textContent = t(lab.dataset.cursor);
-    }, { passive: true });
-    addEventListener("pointerdown", () => ring.classList.add("is-down"));
-    addEventListener("pointerup", () => ring.classList.remove("is-down"));
-    document.addEventListener("pointerleave", () => { ring.style.opacity = "0"; dot.style.opacity = "0"; });
-    document.addEventListener("pointerenter", () => { ring.style.opacity = ""; dot.style.opacity = ""; });
-    (function tick() {
-      rx += (mx - rx) * 0.16; ry += (my - ry) * 0.16;
-      ring.style.transform = "translate3d(" + rx + "px," + ry + "px,0)";
-      dot.style.transform = "translate3d(" + mx + "px," + my + "px,0)";
-      requestAnimationFrame(tick);
-    })();
-  }
-
-  function initMagnetic() {
-    if (!finePointer || reduceMotion) return;
-    document.addEventListener("pointermove", (e) => {
-      document.querySelectorAll("[data-magnetic].is-mag").forEach((el) => {
-        if (el.contains(e.target)) return;
-        el.classList.remove("is-mag");
-        el.style.transition = "transform .8s cubic-bezier(.16,1,.3,1)";
-        el.style.transform = "";
-      });
-      const el = e.target.closest && e.target.closest("[data-magnetic]");
-      if (!el) return;
-      const r = el.getBoundingClientRect();
-      const x = e.clientX - (r.left + r.width / 2), y = e.clientY - (r.top + r.height / 2);
-      const k = Number(el.dataset.magnetic) || 0.3;
-      el.classList.add("is-mag");
-      el.style.transition = "transform .25s cubic-bezier(.16,1,.3,1)";
-      el.style.transform = "translate3d(" + x * k + "px," + y * k + "px,0)";
-    }, { passive: true });
-  }
-
+  /* ================= Kártyák fényfoltja ================= */
   function initCardFx() {
     if (!finePointer || reduceMotion) return;
     document.addEventListener("pointermove", (e) => {
@@ -532,12 +477,7 @@
       const px = e.clientX - r.left, py = e.clientY - r.top;
       card.style.setProperty("--mx", px + "px");
       card.style.setProperty("--my", py + "px");
-      if (card.hasAttribute("data-tilt")) {
-        const rx = (py / r.height - 0.5) * -8, ry = (px / r.width - 0.5) * 8;
-        card.style.transform = "rotateX(" + rx + "deg) rotateY(" + ry + "deg) translateZ(0)";
-      }
     }, { passive: true });
-    document.querySelectorAll("[data-tilt]").forEach((c) => c.addEventListener("pointerleave", () => { c.style.transform = ""; }));
   }
 
   /* ================= Betöltő + oldalváltás ================= */
@@ -554,48 +494,10 @@
     document.dispatchEvent(new Event("vk:ready"));
   }
 
-  function runLoader() {
-    const loader = document.createElement("div");
-    loader.className = "loader";
-    loader.setAttribute("role", "status");
-    loader.innerHTML =
-      '<div class="loader-ring"><svg viewBox="0 0 100 100"><circle class="track" cx="50" cy="50" r="48"/><circle class="bar" cx="50" cy="50" r="48" pathLength="1"/></svg>' +
-      '<span class="loader-num">0</span></div><div class="loader-label">' + t("loader.label") + "</div>";
-    document.body.appendChild(loader);
-    const num = loader.querySelector(".loader-num"), bar = loader.querySelector(".bar");
-    let loaded = false;
-    const assets = Promise.all([
-      new Promise((r) => (document.readyState === "complete" ? r() : addEventListener("load", r, { once: true }))),
-      document.fonts ? document.fonts.ready : Promise.resolve()
-    ]);
-    assets.then(() => (loaded = true));
-    setTimeout(() => (loaded = true), 3500);
-    let p = 0, prog = 0, last = performance.now();
-    const s = last;
-    (function step(now) {
-      // Időalapú haladás: ~1,4 mp alatt 100%, de betöltés előtt 86%-nál megáll
-      prog = Math.min(1, prog + (now - last) / 1400);
-      last = now;
-      const eased = 1 - Math.pow(1 - prog, 3);
-      p = loaded ? eased : Math.min(eased, 0.86);
-      if (now - s > 5000) p = 1;
-      num.textContent = Math.round(p * 100);
-      bar.style.strokeDashoffset = String(1 - p);
-      if (p < 1) { requestAnimationFrame(step); return; }
-      setTimeout(() => {
-        loader.classList.add("is-done");
-        setTimeout(fireReady, 350);
-        setTimeout(() => loader.remove(), 1400);
-      }, 200);
-    })(s);
-  }
-
   function initTransitions() {
     document.body.appendChild(curtain);
     const fromNav = ss.get("vk-curtain") === "1";
     ss.del("vk-curtain");
-    const firstVisit = !ss.get("vk-seen");
-    ss.set("vk-seen", "1");
 
     if (fromNav && !reduceMotion) {
       curtain.classList.add("is-in", "no-anim");
@@ -605,8 +507,6 @@
         setTimeout(fireReady, 250);
         setTimeout(() => { curtain.classList.add("no-anim"); curtain.classList.remove("is-in", "is-out"); }, 1100);
       }));
-    } else if (page === "home" && firstVisit && !reduceMotion) {
-      runLoader();
     } else {
       requestAnimationFrame(fireReady);
     }
@@ -751,6 +651,7 @@
         const data = Object.fromEntries(new FormData(form).entries());
         const done = () => { box.hidden = false; box.className = "alert alert--ok"; box.textContent = t(form.dataset.okKey); form.reset(); };
         if (data.website) { done(); return; }
+        if (!live) { openMail(form, data); box.hidden = false; box.className = "alert alert--ok"; box.textContent = t("form.mail.ok"); return; }
         btn.disabled = true;
         try {
           if (window.VKB) await window.VKB.submit(form.dataset.kind || "contact", data);
@@ -760,6 +661,20 @@
         } finally { btn.disabled = false; }
       });
     });
+  }
+
+  // Amíg nincs éles háttér: a beírt adatokból levél készül a szakszervezet címére
+  function openMail(form, data) {
+    const lines = [];
+    form.querySelectorAll("input[name], select[name], textarea[name]").forEach((el) => {
+      if (el.name === "website" || (el.type === "radio" && !el.checked)) return;
+      const val = el.tagName === "SELECT" ? el.options[el.selectedIndex].text : el.type === "radio" ? el.closest("label").textContent.trim() : el.value.trim();
+      if (!val) return;
+      const lab = el.type === "radio" ? form.querySelector("legend") : form.querySelector('label[for="' + el.id + '"]');
+      lines.push((lab ? lab.textContent.trim() : el.name) + ": " + val);
+    });
+    const subject = t(form.dataset.kind === "join" ? "form.mail.subject.join" : "form.mail.subject.contact") + " – " + (data.name || "");
+    location.href = "mailto:chinoinvdsz@gmail.com?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(lines.join("\n"));
   }
 
   /* ================= PWA ================= */
@@ -819,8 +734,6 @@
   initGSAPScenes();
   observeAll();
   initCounters();
-  initCursor();
-  initMagnetic();
   initCardFx();
   initNews();
   initForms();

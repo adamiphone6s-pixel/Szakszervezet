@@ -89,5 +89,18 @@
     "api/admin.js": {
       "maxDuration": 30
     }
-  }
+  },
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "protection-orb.vercel.app"
+        }
+      ],
+      "destination": "https://chinoin-vdsz.vercel.app/:path*",
+      "permanent": true
+    }
+  ]
 }

@@ -3,5 +3,5 @@ node_modules/
 .vercel
 
 # Valódi tagi tartalom (bizalmik, KSZ, belső nyomtatványok) — SOHA nem kerül a repóba / nyilvános deployba.
-# Élesítéskor a scripts/seed-supabase.js tölti fel a privát Supabase-tárba.
+# Élesítéskor az admin felületen kerül fel a privát Supabase-tárba (docs/SETUP.md).
 private/

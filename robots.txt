@@ -5,4 +5,4 @@ Disallow: /admin.html
 Disallow: /api/
 Disallow: /data/members.json
 Disallow: /data/companies/
-Sitemap: https://protection-orb.vercel.app/sitemap.xml
+Sitemap: https://chinoin-vdsz.vercel.app/sitemap.xml

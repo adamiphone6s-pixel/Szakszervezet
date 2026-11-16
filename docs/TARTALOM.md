@@ -52,3 +52,7 @@ A szövegek Tóth Éva anyagaiból készültek: az első csomag 2026. november 5
 - Az „Mt. XXI. fejezet” hivatkozás kimaradt, amíg a fejezetszámot nem ellenőriztük.
 - A SharePoint-link és az irodaszám belső adat, ezért nincs a nyilvános oldalon.
 - A plakát illusztrációjának licence nem ismert, ezért csak a színeit használjuk.
+
+## Bemutató-belépés
+
+A demó tagi kódok csak a `login.html?demo` linken látszanak, a sima belépőoldalon nem. Évának ezt a linket kell küldeni. Amíg nincs éles háttér, a jelentkezési és a kapcsolati űrlap levelet állít össze a chinoinvdsz@gmail.com címre.
