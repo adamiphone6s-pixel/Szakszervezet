@@ -1,5 +1,6 @@
+# Csak a gyökérszintű mappák (a perjel nélküli "docs/" az assets/docs-ot is kizárná!)
 private/
-scripts/
+/scripts/
+/docs/
+/supabase/
 *.md
-docs/
-supabase/
