@@ -98,6 +98,7 @@
     if (!live) return { demo: true };
     const sb = await ready();
     const row = { kind, name: data.name, email: data.email, phone: data.phone || null, company: data.company || null, position: data.position || null, message: data.message || null };
+    if (kind === "join") row.membership = data.membership === "supporting" ? "supporting" : "full";
     unwrap(await sb.from("submissions").insert(row));
     return { ok: true };
   }

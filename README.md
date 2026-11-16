@@ -65,8 +65,8 @@ Build nem kell, a `vercel.json` már be van állítva.
 ## Havi frissítés
 
 - **Hír:** új elem a `data/news.json`-ba (`hu` / `en` mezőkkel).
-- **Vállalati infó:** a `data/companies/<vállalat>.json` szerkesztése, `updated` dátum átírása.
-- **Új vállalat:** új JSON a `data/companies/` alá (egy meglévő másolata), és a hozzá tartozó tagok.
+- **Vállalati infó (demó):** a valós tartalmat a `private/companies/<vállalat>.json` fájlban szerkeszd. A nyilvános, kivonatolt változatot ez a parancs állítja elő: `node scripts/build-demo-data.js` → `data/companies/`. A `private/` mappa nem kerül gitbe és Vercelre; a részletek a [docs/TARTALOM.md](docs/TARTALOM.md)-ben vannak.
+- **Új vállalat:** új JSON a `private/companies/` alá (egy meglévő másolata), utána futtasd a fenti parancsot, és vedd fel a tagokat.
 
 Élesben ezt egy admin felület (CMS) váltja ki — lásd [docs/PROJEKT.md](docs/PROJEKT.md).
 

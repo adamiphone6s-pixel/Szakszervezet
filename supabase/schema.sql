@@ -54,9 +54,13 @@ create table if not exists public.submissions (
   company     text check (char_length(company) <= 200),
   position    text check (char_length(position) <= 200),
   message     text check (char_length(message) <= 5000),
+  membership  text check (membership in ('full', 'supporting')),   -- belépésnél: teljes jogú / pártoló
   handled     boolean not null default false,
   created_at  timestamptz not null default now()
 );
+
+-- Meglévő adatbázis frissítése (2026-11: tagság típusa a jelentkezésben)
+alter table public.submissions add column if not exists membership text check (membership in ('full', 'supporting'));
 
 -- ---------- Segédfüggvények ----------
 

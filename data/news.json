@@ -1,4 +1,23 @@
 {
   "_info": "Nyilvános hírek. Új hír: másold le egy elemet, adj új egyedi id-t, dátumot (ÉÉÉÉ-HH-NN) és kategóriát (berek | jog | kozosseg | munkavedelem). A body-ban üres sor (\\n\\n) választja el a bekezdéseket.",
-  "items": []
+  "items": [
+    {
+      "id": "2026-11-mezvasar",
+      "date": "2026-11-16",
+      "category": "kozosseg",
+      "art": 1,
+      "title": {
+        "hu": "Mézvásár: december 10-én újra jön Jenei Ferenc",
+        "en": "Honey market: Ferenc Jenei is back on 10 December"
+      },
+      "excerpt": {
+        "hu": "Csütörtök 10–11 óra, a Tó utcai bejárat előtti parkolóban: méhészeti termékek piaci ár alatt.",
+        "en": "Thursday 10:00–11:00, in the car park by the Tó utca entrance: honey products below market prices."
+      },
+      "body": {
+        "hu": "Évek óta havonta egyszer Jenei Ferenc méhész termékeiből vásárolhattok piaci ár alatt. A 2026. második félévi vásárok közül a következő december 10-én, csütörtökön lesz, 10 és 11 óra között, a Tó utcai bejárat előtti parkolóban.\n\nA méhész elérhetősége: Jenei Ferenc, +36 20 417 0941, jeneimez.hu.",
+        "en": "For years, once a month, you've been able to buy honey from beekeeper Ferenc Jenei below market prices. The next market of the second half of 2026 is on Thursday 10 December, 10:00–11:00, in the car park by the Tó utca entrance.\n\nBeekeeper contact: Ferenc Jenei, +36 20 417 0941, jeneimez.hu."
+      }
+    }
+  ]
 }

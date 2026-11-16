@@ -76,6 +76,12 @@ from auth.users where email = 'adm-001@tag.chinoinvdsz.local';
 3. **Hírek** → a weboldal nyilvános hírei (csak a „Publikus” jelölésűek jelennek meg).
 4. **Beérkezett** → a weboldal csatlakozási és kapcsolati űrlapjainak üzenetei.
 
+**Kezdő tartalom:** a vállalati anyagok a helyi `private/` mappában vannak, Supabase-be még nem kerültek fel.
+- PDF-ek: `private/docs/`.
+- Adatok vállalatonként: `private/companies/<id>.json`, ezen belül a bizalmik (`contacts`, csoporttal és területtel), a dokumentumok kategóriával (`cat`: ksz / rules / forms / useful), valamint a hírek és az események.
+- Ezeket az admin felületen kell vállalatonként felvinni.
+- Ha a séma korábban már futott, az új `membership` oszlop miatt futtasd újra a `supabase/schema.sql` fájlt. Ez biztonságos, az `add column if not exists` miatt.
+
 A tagok első belépéskor kötelezően saját jelszót állítanak be. Elfelejtett jelszó: admin → Tagok → **Új jelszó**.
 
 ## 7. Ellenőrzőlista élesítés előtt

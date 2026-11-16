@@ -176,10 +176,12 @@
       '<div><h4 data-i18n="nav.members"></h4><ul>' +
       '<li><a href="login.html">' + roll("login.title") + "</a></li>" +
       '<li><a href="join.html">' + roll("nav.join") + "</a></li>" +
-      '<li><a href="privacy.html">' + roll("footer.privacy") + "</a></li></ul></div>" +
+      '<li><a href="privacy.html">' + roll("footer.privacy") + "</a></li>" +
+      '<li><a href="assets/docs/alapszabaly-2022.pdf" target="_blank" rel="noopener">' + roll("footer.statutes") + "</a></li></ul></div>" +
       '<div><h4 data-i18n="footer.contact"></h4><ul>' +
       '<li><a href="mailto:chinoinvdsz@gmail.com">chinoinvdsz@gmail.com</a></li>' +
-      '<li><a href="tel:+3615051678">06-1-505-1678</a></li></ul></div>' +
+      '<li><a href="tel:+3615051678">06-1-505-1678</a></li>' +
+      '<li><span>1045 Budapest, Tó u. 1–5.</span></li></ul></div>' +
       "</div>" +
       '<div class="footer-bottom"><span>© ' + new Date().getFullYear() + ' <span data-i18n="brand.name"></span> <span data-i18n="brand.tag"></span>. <span data-i18n="footer.rights"></span></span>' +
       '<button type="button" class="install-link" hidden data-i18n="footer.install"></button>' +

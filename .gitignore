@@ -1,3 +1,7 @@
 node_modules/
 .DS_Store
 .vercel
+
+# Valódi tagi tartalom (bizalmik, KSZ, belső nyomtatványok) — SOHA nem kerül a repóba / nyilvános deployba.
+# Élesítéskor a scripts/seed-supabase.js tölti fel a privát Supabase-tárba.
+private/

@@ -146,6 +146,7 @@
   if (!VIEWS.includes(view)) view = "overview";
   let company = null;
   let docFilter = "";
+  let docCat = "";
   let cdTimer = 0;
 
   const I = {
@@ -289,8 +290,9 @@
       '<h2 style="font-size:clamp(28px,3vw,44px);max-width:18ch;margin-top:auto">' + esc(tr(c.highlight.title)) + '</h2><p style="max-width:56ch">' + esc(tr(c.highlight.text)) + "</p></article>" +
       // Gyors elérés
       '<article class="tile s-5 rise" style="--i:6"><small>' + t("portal.quick") + '</small><div class="quick">' +
-      (firstContact ? '<a href="tel:' + esc(firstContact.phone.replace(/\s/g, "")) + '">' + ic("phone") + "<span>" + t("portal.quick.call") + '</span><span class="go">' + ic("arrow") + "</span></a>" : "") +
-      (firstDoc ? '<a href="#docs" data-view="docs">' + ic("file") + "<span>" + t("portal.quick.doc") + '</span><span class="go">' + ic("arrow") + "</span></a>" : "") +
+      (firstContact ? '<a href="#contacts" data-view="contacts">' + ic("users") + "<span>" + t("portal.quick.call") + '</span><span class="go">' + ic("arrow") + "</span></a>" : "") +
+      (firstDoc ? '<a href="#docs" data-view="docs" data-doc-cat-go="' + (c.documents.some((d) => d.cat === "ksz") ? "ksz" : "") + '">' + ic("file") + "<span>" + t("portal.quick.doc") + '</span><span class="go">' + ic("arrow") + "</span></a>" : "") +
+      (c.documents.some((d) => d.cat === "forms") ? '<a href="#docs" data-view="docs" data-doc-cat-go="forms">' + ic("file") + "<span>" + t("portal.quick.forms") + '</span><span class="go">' + ic("arrow") + "</span></a>" : "") +
       '<a href="tel:+3615051678">' + ic("scale") + "<span>" + t("portal.quick.legal") + '</span><span class="go">' + ic("arrow") + "</span></a>" +
       "</div></article>" +
       // Friss hírek
@@ -321,27 +323,63 @@
       w.benefits.map((b) => '<div class="ben"><span>' + esc(tr(b.label)) + "</span><i></i><b>" + esc(tr(b.value)) + "</b></div>").join("") +
       "</div></article></div>";
   }
+  // Dokumentum-kategóriák a szűrőchipekhez (sorrend = megjelenési sorrend)
+  const DOC_CATS = ["ksz", "rules", "forms", "useful"];
+  const docCatsOf = (c) => DOC_CATS.filter((k) => c.documents.some((d) => d.cat === k));
   function docCards(c) {
     const q = docFilter.trim().toLowerCase();
-    const list = c.documents.filter((d) => !q || (tr(d.title) + " " + tr(d.meta) + " " + d.type).toLowerCase().includes(q));
+    const list = c.documents.filter((d) => (!docCat || d.cat === docCat) && (!q || (tr(d.title) + " " + tr(d.meta) + " " + d.type).toLowerCase().includes(q)));
     if (!list.length) return '<p class="empty-dark">' + t(c.documents.length ? "portal.docs.none" : "portal.pending") + "</p>";
+    const arrow = ic("arrowUR").replace("<svg", '<svg width="16" height="16"');
     return '<div class="docs">' + list.map((d, i) =>
-      '<article class="doc rise" style="--i:' + (i + 1) + '"><span class="type">' + esc(d.type) + "</span><h3>" + esc(tr(d.title)) + "</h3><p>" + esc(tr(d.meta)) + '</p><a class="open" href="' + esc(d.url) + '">' + t("portal.docs.download") + " " + ic("arrowUR").replace("<svg", '<svg width="16" height="16"') + "</a></article>").join("") + "</div>";
+      '<article class="doc rise" style="--i:' + (i + 1) + '"><div class="doc-top"><span class="type">' + esc(d.type) + "</span>" + (d.cat ? '<span class="doc-cat">' + t("portal.docs.cat." + d.cat) + "</span>" : "") + "</div><h3>" + esc(tr(d.title)) + "</h3><p>" + esc(tr(d.meta)) + "</p>" +
+      (d.url
+        ? '<a class="open" href="' + esc(d.url) + '" target="_blank" rel="noopener">' + t("portal.docs.download") + " " + arrow + "</a>"
+        : '<span class="open is-locked">' + ic("lock").replace("<svg", '<svg width="15" height="15"') + t("portal.docs.locked") + "</span>") +
+      "</article>").join("") + "</div>";
   }
   function vDocs(c) {
+    const cats = docCatsOf(c);
+    const chips = cats.length > 1
+      ? '<div class="doc-cats rise" style="--i:1" role="group" aria-label="' + t("portal.docs.cats") + '">' +
+        ['<button type="button" class="chip-dark" data-doc-cat="" aria-pressed="' + (!docCat) + '">' + t("portal.docs.cat.all") + "</button>"]
+          .concat(cats.map((k) => '<button type="button" class="chip-dark" data-doc-cat="' + k + '" aria-pressed="' + (docCat === k) + '">' + t("portal.docs.cat." + k) + "</button>")).join("") + "</div>"
+      : "";
     return head("portal.head.docs", '<label class="field-dark rise" style="--i:1">' + ic("search") + '<input type="search" data-doc-filter value="' + esc(docFilter) + '" placeholder="' + t("portal.docs.filter") + '" aria-label="' + t("portal.docs.filter") + '"></label>') +
-      '<div data-doc-list>' + docCards(c) + "</div>";
+      chips + '<div data-doc-list>' + docCards(c) + "</div>";
+  }
+  function personCard(p, i) {
+    const sm = (svg) => svg.replace("<svg", '<svg width="16" height="16"');
+    const tel = p.phone ? p.phone.replace(/[\s-]/g, "") : "";
+    const primary = tel
+      ? '<a class="btn btn--volt btn--sm" href="tel:' + esc(tel) + '">' + sm(ic("phone")) + "<span>" + t("portal.contacts.call") + "</span></a>"
+      : p.email ? '<a class="btn btn--volt btn--sm" href="mailto:' + esc(p.email) + '">' + sm(ic("mail")) + "<span>" + t("portal.contacts.write") + "</span></a>" : "";
+    return '<article class="pc rise" style="--i:' + Math.min(i + 1, 12) + '"><div class="av" style="--p:' + (55 + (i * 17) % 40) + '%">' + esc(initials(p.name)) + "</div>" +
+      "<div><h3>" + esc(p.name) + "</h3><p>" + esc(tr(p.role)) + (p.area ? " · " + esc(p.area) : "") + "</p></div>" +
+      '<div class="contact">' + (p.phone ? "<span>" + esc(p.phone) + "</span>" : "") + (p.email ? "<span>" + esc(p.email) + "</span>" : '<span class="muted-note">' + t("portal.contacts.noEmail") + "</span>") + "</div>" +
+      '<div class="actions">' + primary +
+      (tel && p.email ? '<a class="icon-btn" href="mailto:' + esc(p.email) + '" aria-label="' + t("portal.contacts.mail") + '" title="' + t("portal.contacts.mail") + '">' + ic("mail") + "</a>" : "") +
+      (p.email ? '<button class="icon-btn" type="button" data-copy="' + esc(p.email) + '" aria-label="' + t("portal.copy") + '" title="' + t("portal.copy") + '">' + ic("copy") + "</button>" : "") +
+      "</div></article>";
   }
   function vContacts(c) {
-    if (!c.contacts.length) return head("portal.head.contacts") + '<p class="empty-dark">' + t("portal.pending") + "</p>";
-    return head("portal.head.contacts") +
-      '<div class="people-app">' + c.contacts.map((p, i) =>
-        '<article class="pc rise" style="--i:' + (i + 1) + '"><div class="av" style="--p:' + (55 + (i * 17) % 40) + '%">' + esc(initials(p.name)) + "</div>" +
-        "<div><h3>" + esc(p.name) + "</h3><p>" + esc(tr(p.role)) + "</p></div>" +
-        '<div class="contact"><span>' + esc(p.phone) + "</span><span>" + esc(p.email) + "</span></div>" +
-        '<div class="actions"><a class="btn btn--volt btn--sm" href="tel:' + esc(p.phone.replace(/\s/g, "")) + '">' + ic("phone").replace("<svg", '<svg width="16" height="16"') + "<span>" + t("portal.contacts.call") + "</span></a>" +
-        '<a class="icon-btn" href="mailto:' + esc(p.email) + '" aria-label="' + t("portal.contacts.mail") + '" title="' + t("portal.contacts.mail") + '">' + ic("mail") + "</a>" +
-        '<button class="icon-btn" type="button" data-copy="' + esc(p.email) + '" aria-label="' + t("portal.copy") + '" title="' + t("portal.copy") + '">' + ic("copy") + "</button></div></article>").join("") + "</div>";
+    const locked = c.locked && c.locked.contacts;
+    const lockNote = locked ? '<p class="empty-dark lock-note">' + ic("lock").replace("<svg", '<svg width="18" height="18"') + t("portal.contacts.locked").replace("{n}", locked) + "</p>" : "";
+    if (!c.contacts.length) return head("portal.head.contacts") + (lockNote || '<p class="empty-dark">' + t("portal.pending") + "</p>");
+    // Csoportosítás a „group” mező szerint, a megadott sorrendben
+    const groups = [];
+    c.contacts.forEach((p) => {
+      const g = p.group ? tr(p.group) : t("portal.tab.contacts");
+      let grp = groups.find((x) => x.g === g);
+      if (!grp) groups.push((grp = { g, items: [] }));
+      grp.items.push(p);
+    });
+    const hasStewards = c.contacts.some((p) => !(p.group && p.group.hu === "Szolgáltatások"));
+    let n = 0;
+    return head("portal.head.contacts") + lockNote +
+      (!hasStewards && !locked ? '<p class="empty-dark">' + t("portal.contacts.pendingStewards") + "</p>" : "") +
+      groups.map((grp) => (groups.length > 1 ? '<h2 class="people-group rise" style="--i:' + Math.min(n + 1, 12) + '">' + esc(grp.g) + "<span>" + grp.items.length + "</span></h2>" : "") +
+        '<div class="people-app">' + grp.items.map((p) => personCard(p, n++)).join("") + "</div>").join("");
   }
   function vEvents(c) {
     const list = upcoming(c);
@@ -455,7 +493,7 @@
     const c = company;
     return [
       { g: "portal.search.views", items: VIEWS.map((k) => ({ icon: VIEW_ICON[k], label: t("portal.tab." + k), run: () => go(k, true) })) },
-      { g: "portal.search.docs", items: c.documents.map((d) => ({ icon: "file", label: tr(d.title), sub: tr(d.meta), run: () => { docFilter = tr(d.title); go("docs", true); renderView("docs", true); } })) },
+      { g: "portal.search.docs", items: c.documents.map((d) => ({ icon: "file", label: tr(d.title), sub: tr(d.meta), run: () => { docFilter = tr(d.title); docCat = ""; go("docs", true); renderView("docs", true); } })) },
       { g: "portal.search.people", items: c.contacts.map((p) => ({ icon: "users", label: p.name, sub: tr(p.role), run: () => go("contacts", true) })) },
       { g: "portal.search.events", items: upcoming(c).map((e) => ({ icon: "calendar", label: tr(e.title), sub: fmtDate(e.date), run: () => go("events", true) })) }
     ];
@@ -529,7 +567,20 @@
   /* --- Események --- */
   root.addEventListener("click", (e) => {
     const v = e.target.closest("[data-view]");
-    if (v) { e.preventDefault(); go(v.dataset.view, true); return; }
+    if (v) {
+      e.preventDefault();
+      if (v.dataset.docCatGo !== undefined) { docCat = v.dataset.docCatGo; docFilter = ""; if (view === "docs") renderView("docs", true); }
+      go(v.dataset.view, true);
+      return;
+    }
+    const dc = e.target.closest("[data-doc-cat]");
+    if (dc) {
+      docCat = dc.dataset.docCat;
+      root.querySelectorAll("[data-doc-cat]").forEach((b) => b.setAttribute("aria-pressed", String(b === dc)));
+      const list = root.querySelector("[data-doc-list]");
+      list.innerHTML = docCards(company);
+      return;
+    }
     if (e.target.closest("[data-logout]")) {
       setSession(null);
       Promise.resolve(B && B.live ? B.logout() : null).finally(() => (location.href = "login.html"));
@@ -610,7 +661,11 @@
         renderShell();
         if (m.must_change_password) askNewPassword();
       } else {
-        const r = await fetch("data/companies/" + encodeURIComponent(session.company) + ".json", { cache: "no-cache" });
+        // Helyi bemutatón a valódi tartalom (private/, nincs a gitben és a nyilvános deployban);
+        // ha nincs ilyen, a nyilvános demó-változat (data/companies)
+        const id = encodeURIComponent(session.company);
+        let r = await fetch("private/companies/" + id + ".json", { cache: "no-cache" }).catch(() => null);
+        if (!r || !r.ok || !/json/.test(r.headers.get("content-type") || "")) r = await fetch("data/companies/" + id + ".json", { cache: "no-cache" });
         if (!r.ok) throw new Error("company");
         company = await r.json();
         renderShell();

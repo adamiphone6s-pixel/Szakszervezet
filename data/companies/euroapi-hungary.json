@@ -1,19 +1,19 @@
 {
-  "_info": "Vállalati tagi tartalom — havonta frissítendő. A kétnyelvű mezők { hu, en } formátumúak.",
+  "_info": "NYILVÁNOS DEMÓ — a scripts/build-demo-data.js állítja elő, kézzel ne szerkeszd. A bizalmik adatai és a tagi dokumentumok csak belépés után érhetők el.",
   "id": "euroapi-hungary",
   "name": "Euroapi Hungary Kft.",
   "short": "EA",
   "accent": "#52bfa5",
-  "updated": "2026-11-05",
+  "updated": "2026-11-16",
   "memberCount": 0,
   "highlight": {
     "title": {
-      "hu": "Az anyagok feltöltése folyamatban",
-      "en": "Documents are being uploaded"
+      "hu": "Így zajlik a bértárgyalás",
+      "en": "How pay negotiations work"
     },
     "text": {
-      "hu": "A vállalati dokumentumok, a bizalmik elérhetősége és az események hamarosan itt lesznek.",
-      "en": "Company documents, shop-steward contacts and events will appear here soon."
+      "hu": "Felkészülés gazdasági elemzéssel, 4–5 zárt tárgyalási nap január végéig, cél az infláció feletti emelés. A megállapodásról először a munkáltató tájékoztat, utána mi azonnal jelentkezünk a részletekkel.",
+      "en": "Preparation backed by an economic analysis, 4–5 closed negotiating days until the end of January, aiming for an above-inflation rise. The employer announces the agreement first; we follow straight away with the details."
     }
   },
   "wages": {
@@ -25,8 +25,284 @@
     "bands": [],
     "benefits": []
   },
-  "news": [],
-  "documents": [],
-  "contacts": [],
-  "events": []
+  "news": [
+    {
+      "date": "2026-11-16",
+      "title": {
+        "hu": "Így zajlik a bértárgyalás",
+        "en": "How pay negotiations work"
+      },
+      "text": {
+        "hu": "Bérbizottság és tárgyalócsapat, gazdasági elemzés, zárt tárgyalások január végéig. A teljes leírást a Dokumentumok között találod.",
+        "en": "A pay committee and negotiating team, an economic analysis, closed talks until the end of January. The full description is under Documents."
+      }
+    }
+  ],
+  "events": [
+    {
+      "date": "2026-12-10",
+      "title": {
+        "hu": "Mézvásár",
+        "en": "Honey market"
+      },
+      "text": {
+        "hu": "Csütörtök 10–11 óra, a Tó utcai bejárat előtti parkolóban. Jenei Ferenc méhész termékei piaci ár alatt.",
+        "en": "Thursday 10:00–11:00, in the car park by the Tó utca entrance. Honey from beekeeper Ferenc Jenei, below market prices."
+      }
+    }
+  ],
+  "contacts": [
+    {
+      "group": {
+        "hu": "Szolgáltatások",
+        "en": "Services"
+      },
+      "name": "Szakszervezeti iroda",
+      "role": {
+        "hu": "Chinoin VDSZ, 1045 Budapest, Tó u. 1–5.",
+        "en": "Chinoin VDSZ, 1045 Budapest, Tó u. 1–5."
+      },
+      "phone": "06-1-505-1678",
+      "email": "chinoinvdsz@gmail.com"
+    }
+  ],
+  "documents": [
+    {
+      "type": "PDF",
+      "cat": "ksz",
+      "title": {
+        "hu": "Kollektív szerződés (Euroapi Hungary Kft.)",
+        "en": "Collective agreement (Euroapi Hungary Kft.)"
+      },
+      "meta": {
+        "hu": "2025. szeptember 23., egységes szerkezetben · 16 oldal",
+        "en": "23 September 2025, consolidated · 16 pages"
+      }
+    },
+    {
+      "type": "PDF",
+      "cat": "ksz",
+      "title": {
+        "hu": "A Munka Törvénykönyve és a KSZ összehasonlítása",
+        "en": "Labour Code vs. collective agreement"
+      },
+      "meta": {
+        "hu": "Mit ad a KSZ a törvényen felül · 2 oldal",
+        "en": "What the agreement adds to the law · 2 pages"
+      }
+    },
+    {
+      "type": "XLS",
+      "cat": "ksz",
+      "title": {
+        "hu": "Kalkulátor: Mt. kontra Euroapi KSZ",
+        "en": "Calculator: Labour Code vs. Euroapi agreement"
+      },
+      "meta": {
+        "hu": "Excel-táblázat a juttatások összevetéséhez",
+        "en": "Spreadsheet comparing entitlements"
+      }
+    },
+    {
+      "type": "PDF",
+      "cat": "useful",
+      "title": {
+        "hu": "Így zajlik a bértárgyalás",
+        "en": "How pay negotiations work"
+      },
+      "meta": {
+        "hu": "Felkészülés, tárgyalás, kommunikáció · 1 oldal",
+        "en": "Preparation, talks, communication · 1 page"
+      }
+    },
+    {
+      "type": "PDF",
+      "cat": "rules",
+      "title": {
+        "hu": "Alapszabály",
+        "en": "Statutes"
+      },
+      "meta": {
+        "hu": "2022, egységes szerkezetben · 13 oldal",
+        "en": "2022, consolidated · 13 pages"
+      },
+      "url": "assets/docs/alapszabaly-2022.pdf"
+    },
+    {
+      "type": "PDF",
+      "cat": "rules",
+      "title": {
+        "hu": "Szakszervezeti támogatási szabályzat",
+        "en": "Union support rules"
+      },
+      "meta": {
+        "hu": "Hatályos: 2026. június 8-tól · 6 oldal",
+        "en": "In force from 8 June 2026 · 6 pages"
+      }
+    },
+    {
+      "type": "PDF",
+      "cat": "rules",
+      "title": {
+        "hu": "Kamatmentes kölcsön szabályzata",
+        "en": "Interest-free loan rules"
+      },
+      "meta": {
+        "hu": "Készült: 2020. december 15. · 6 oldal",
+        "en": "Issued 15 December 2020 · 6 pages"
+      }
+    },
+    {
+      "type": "PDF",
+      "cat": "rules",
+      "title": {
+        "hu": "Rekreációs támogatás szabályzata",
+        "en": "Recreation support rules"
+      },
+      "meta": {
+        "hu": "Üdülés, wellness, gyerektábor · 2023 · 3 oldal",
+        "en": "Holidays, wellness, summer camp · 2023 · 3 pages"
+      }
+    },
+    {
+      "type": "PDF",
+      "cat": "rules",
+      "title": {
+        "hu": "Sztrájkszabályzat",
+        "en": "Strike rules"
+      },
+      "meta": {
+        "hu": "Módosítva: 2022. január 25. · 7 oldal",
+        "en": "Amended 25 January 2022 · 7 pages"
+      }
+    },
+    {
+      "type": "PDF",
+      "cat": "rules",
+      "title": {
+        "hu": "Adatkezelési tájékoztató tagoknak",
+        "en": "Privacy notice for members"
+      },
+      "meta": {
+        "hu": "2018. május · 4 oldal",
+        "en": "May 2018 · 4 pages"
+      },
+      "url": "assets/docs/adatkezelesi-tajekoztato-tagoknak.pdf"
+    },
+    {
+      "type": "PDF",
+      "cat": "rules",
+      "title": {
+        "hu": "Általános adatvédelmi szabályzat",
+        "en": "General data protection policy"
+      },
+      "meta": {
+        "hu": "2018. május · 22 oldal",
+        "en": "May 2018 · 22 pages"
+      },
+      "url": "assets/docs/adatvedelmi-szabalyzat.pdf"
+    },
+    {
+      "type": "PDF",
+      "cat": "forms",
+      "title": {
+        "hu": "Támogatási kérelem",
+        "en": "Support application form"
+      },
+      "meta": {
+        "hu": "Minden támogatáshoz ezt kell kitölteni · 1 oldal",
+        "en": "Required for every support claim · 1 page"
+      }
+    },
+    {
+      "type": "PDF",
+      "cat": "forms",
+      "title": {
+        "hu": "Kamatmentes kölcsön igénylőlap",
+        "en": "Interest-free loan application"
+      },
+      "meta": {
+        "hu": "Bizalmi vagy főbizalmi aláírásával · 1 oldal",
+        "en": "Signed by a shop steward · 1 page"
+      }
+    },
+    {
+      "type": "PDF",
+      "cat": "forms",
+      "title": {
+        "hu": "Jogfenntartói nyilatkozat",
+        "en": "Membership retention form"
+      },
+      "meta": {
+        "hu": "Nyugdíj, GYES/GYED idejére · 100 Ft/hó",
+        "en": "For retirement or parental leave · HUF 100/month"
+      }
+    },
+    {
+      "type": "PDF",
+      "cat": "forms",
+      "title": {
+        "hu": "Kilépési nyilatkozat",
+        "en": "Resignation form"
+      },
+      "meta": {
+        "hu": "A tagság megszüntetéséhez · 1 oldal",
+        "en": "To end your membership · 1 page"
+      }
+    },
+    {
+      "type": "PDF",
+      "cat": "forms",
+      "title": {
+        "hu": "Belépési nyilatkozat (Euroapi Hungary Kft.)",
+        "en": "Membership form (Euroapi Hungary Kft.)"
+      },
+      "meta": {
+        "hu": "Ajánld a kollégáidnak · 2 oldal",
+        "en": "Share it with colleagues · 2 pages"
+      },
+      "url": "assets/docs/belepesi-nyilatkozat-euroapi.pdf"
+    },
+    {
+      "type": "PDF",
+      "cat": "forms",
+      "title": {
+        "hu": "Pártoló tag belépési nyilatkozata",
+        "en": "Supporting member application"
+      },
+      "meta": {
+        "hu": "Ajánld a kollégáidnak · 2 oldal",
+        "en": "Share it with colleagues · 2 pages"
+      },
+      "url": "assets/docs/partoloi-belepesi-nyilatkozat.pdf"
+    },
+    {
+      "type": "PDF",
+      "cat": "forms",
+      "title": {
+        "hu": "Pártoló tag belépési nyilatkozata (magyar–angol)",
+        "en": "Supporting member application (Hungarian–English)"
+      },
+      "meta": {
+        "hu": "Kétnyelvű változat · 2 oldal",
+        "en": "Bilingual version · 2 pages"
+      },
+      "url": "assets/docs/partoloi-belepesi-nyilatkozat-hu-en.pdf"
+    },
+    {
+      "type": "PDF",
+      "cat": "useful",
+      "title": {
+        "hu": "Tájékoztató a pártolói tagságról",
+        "en": "About supporting membership"
+      },
+      "meta": {
+        "hu": "Kinek ajánljuk, mit kap, mennyibe kerül",
+        "en": "Who it's for, what it includes, what it costs"
+      }
+    }
+  ],
+  "locked": {
+    "contacts": 22
+  }
 }

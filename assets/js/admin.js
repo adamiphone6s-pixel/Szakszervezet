@@ -321,8 +321,8 @@
       { k: "wages.benefits", l: "Juttatások", t: "list", addLabel: "Új juttatás", item: [{ k: "label", l: "Megnevezés", t: "i18n" }, { k: "value", l: "Érték", t: "i18n" }] }] },
     { s: "Vállalati hírek", f: [{ k: "news", t: "list", addLabel: "Új vállalati hír", item: DATED }] },
     { s: "Események", f: [{ k: "events", t: "list", addLabel: "Új esemény", item: DATED }] },
-    { s: "Bizalmik", f: [{ k: "contacts", t: "list", addLabel: "Új bizalmi", item: [{ k: "name", l: "Név", t: "text" }, { k: "role", l: "Szerep", t: "i18n" }, { k: "phone", l: "Telefon", t: "text" }, { k: "email", l: "E-mail", t: "email" }] }] },
-    { s: "Dokumentumok", f: [{ k: "documents", t: "list", addLabel: "Új dokumentum", item: [{ k: "type", l: "Típus", t: "select", opts: ["PDF", "DOC", "XLS", "KÉP"] }, { k: "title", l: "Cím", t: "i18n" }, { k: "meta", l: "Megjegyzés (pl. Hatályos: 2026. jan. 1.)", t: "i18n" }, { k: "path", l: "Fájl", t: "file" }] }] }
+    { s: "Bizalmik", f: [{ k: "contacts", t: "list", addLabel: "Új bizalmi", item: [{ k: "name", l: "Név", t: "text" }, { k: "role", l: "Tisztség / szerep", t: "i18n" }, { k: "area", l: "Terület (pl. APT 304)", t: "text" }, { k: "group", l: "Csoport (pl. Bizalmik · QA/QC, vagy Szolgáltatások)", t: "i18n" }, { k: "phone", l: "Telefon (nem kötelező)", t: "text" }, { k: "email", l: "E-mail", t: "email" }] }] },
+    { s: "Dokumentumok", f: [{ k: "documents", t: "list", addLabel: "Új dokumentum", item: [{ k: "type", l: "Típus", t: "select", opts: ["PDF", "DOC", "XLS", "KÉP"] }, { k: "cat", l: "Kategória", t: "select", opts: [["ksz", "Kollektív szerződés"], ["rules", "Szabályzatok"], ["forms", "Nyomtatványok"], ["useful", "Hasznos"]] }, { k: "title", l: "Cím", t: "i18n" }, { k: "meta", l: "Megjegyzés (pl. Hatályos: 2026. jan. 1.)", t: "i18n" }, { k: "path", l: "Fájl", t: "file" }] }] }
   ];
   async function vCompanies(el) {
     await loadCompanies();
@@ -566,7 +566,7 @@
     el.innerHTML = head("Beérkezett", "A weboldal csatlakozási és kapcsolatfelvételi űrlapjain beküldött üzenetek.") +
       (rows.length
         ? '<div style="display:grid;gap:12px">' + rows.map((s) =>
-            '<article class="sub-card' + (s.handled ? " is-handled" : "") + '"><div class="meta"><span class="badge ' + (s.kind === "join" ? "badge--accent" : "") + '">' + (s.kind === "join" ? "Csatlakozás" : "Üzenet") + "</span><span>" + esc(new Date(s.created_at).toLocaleString("hu-HU")) + "</span></div>" +
+            '<article class="sub-card' + (s.handled ? " is-handled" : "") + '"><div class="meta"><span class="badge ' + (s.kind === "join" ? "badge--accent" : "") + '">' + (s.kind === "join" ? "Csatlakozás" + (s.membership === "supporting" ? " · pártoló" : s.membership === "full" ? " · teljes jogú" : "") : "Üzenet") + "</span><span>" + esc(new Date(s.created_at).toLocaleString("hu-HU")) + "</span></div>" +
             '<h3 style="font-size:20px;letter-spacing:-0.02em">' + esc(s.name) + '</h3><div class="meta"><a href="mailto:' + esc(s.email) + '" style="color:var(--accent)">' + esc(s.email) + "</a>" + (s.phone ? "<span>" + esc(s.phone) + "</span>" : "") + (s.company ? "<span>" + esc(s.company) + "</span>" : "") + (s.position ? "<span>" + esc(s.position) + "</span>" : "") + "</div>" +
             (s.message ? '<p class="msg">' + esc(s.message) + "</p>" : "") +
             '<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="mini-btn" data-sub-toggle="' + s.id + '" data-v="' + (!s.handled) + '">' + (s.handled ? "Visszaállítás kezeletlenre" : "Kezeltnek jelöl") + '</button><button class="mini-btn danger" data-sub-del="' + s.id + '">Törlés</button></div></article>').join("") + "</div>"

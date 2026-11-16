@@ -30,6 +30,12 @@
       "name": "Kolléga",
       "company": "sanofi-aventis",
       "hash": "b80a44a8edc546c446c4e29fa47e0f2043c6bb49237df3bb228773748755434a"
+    },
+    {
+      "code": "CS-6001",
+      "name": "Kolléga",
+      "company": "csanyikvolgy",
+      "hash": "e8cdc575880fff01c009a2bfd24427ecbfdf0962ad09edf6f571efcd27af2bbb"
     }
   ]
 }

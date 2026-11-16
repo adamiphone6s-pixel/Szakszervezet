@@ -1,0 +1,260 @@
+{
+  "_info": "NYILVÁNOS DEMÓ — a scripts/build-demo-data.js állítja elő, kézzel ne szerkeszd. A bizalmik adatai és a tagi dokumentumok csak belépés után érhetők el.",
+  "id": "csanyikvolgy",
+  "name": "Csanyikvölgy",
+  "short": "CS",
+  "accent": "#52bfa5",
+  "updated": "2026-11-16",
+  "memberCount": 0,
+  "highlight": {
+    "title": {
+      "hu": "Így kéred a támogatást",
+      "en": "How to apply for support"
+    },
+    "text": {
+      "hu": "Minden támogatáshoz a Támogatási kérelem kell. Írd rá a Workday-azonosítódat (ne a régi törzsszámot) és a bankszámlaszámodat, írasd alá a bizalmiddal, és add le a szakszervezeti irodán.",
+      "en": "Every type of support needs the Support application form. Add your Workday ID (not your old staff number) and your bank account number, have your shop steward sign it, and hand it in at the union office."
+    }
+  },
+  "wages": {
+    "increase": "",
+    "note": {
+      "hu": "",
+      "en": ""
+    },
+    "bands": [],
+    "benefits": []
+  },
+  "news": [],
+  "events": [],
+  "contacts": [
+    {
+      "group": {
+        "hu": "Szolgáltatások",
+        "en": "Services"
+      },
+      "name": "Szakszervezeti iroda",
+      "role": {
+        "hu": "Chinoin VDSZ, 1045 Budapest, Tó u. 1–5.",
+        "en": "Chinoin VDSZ, 1045 Budapest, Tó u. 1–5."
+      },
+      "phone": "06-1-505-1678",
+      "email": "chinoinvdsz@gmail.com"
+    }
+  ],
+  "documents": [
+    {
+      "type": "PDF",
+      "cat": "ksz",
+      "title": {
+        "hu": "Kollektív szerződés (Sanofi, 2024)",
+        "en": "Collective agreement (Sanofi, 2024)"
+      },
+      "meta": {
+        "hu": "18 oldal",
+        "en": "18 pages"
+      }
+    },
+    {
+      "type": "PDF",
+      "cat": "ksz",
+      "title": {
+        "hu": "A Munka Törvénykönyve és a KSZ összehasonlítása",
+        "en": "Labour Code vs. collective agreement"
+      },
+      "meta": {
+        "hu": "Mit ad a KSZ a törvényen felül · 2 oldal",
+        "en": "What the agreement adds to the law · 2 pages"
+      }
+    },
+    {
+      "type": "PDF",
+      "cat": "rules",
+      "title": {
+        "hu": "Alapszabály",
+        "en": "Statutes"
+      },
+      "meta": {
+        "hu": "2022, egységes szerkezetben · 13 oldal",
+        "en": "2022, consolidated · 13 pages"
+      },
+      "url": "assets/docs/alapszabaly-2022.pdf"
+    },
+    {
+      "type": "PDF",
+      "cat": "rules",
+      "title": {
+        "hu": "Szakszervezeti támogatási szabályzat",
+        "en": "Union support rules"
+      },
+      "meta": {
+        "hu": "Hatályos: 2026. június 8-tól · 6 oldal",
+        "en": "In force from 8 June 2026 · 6 pages"
+      }
+    },
+    {
+      "type": "PDF",
+      "cat": "rules",
+      "title": {
+        "hu": "Kamatmentes kölcsön szabályzata",
+        "en": "Interest-free loan rules"
+      },
+      "meta": {
+        "hu": "Készült: 2020. december 15. · 6 oldal",
+        "en": "Issued 15 December 2020 · 6 pages"
+      }
+    },
+    {
+      "type": "PDF",
+      "cat": "rules",
+      "title": {
+        "hu": "Rekreációs támogatás szabályzata",
+        "en": "Recreation support rules"
+      },
+      "meta": {
+        "hu": "Üdülés, wellness, gyerektábor · 2023 · 3 oldal",
+        "en": "Holidays, wellness, summer camp · 2023 · 3 pages"
+      }
+    },
+    {
+      "type": "PDF",
+      "cat": "rules",
+      "title": {
+        "hu": "Sztrájkszabályzat",
+        "en": "Strike rules"
+      },
+      "meta": {
+        "hu": "Módosítva: 2022. január 25. · 7 oldal",
+        "en": "Amended 25 January 2022 · 7 pages"
+      }
+    },
+    {
+      "type": "PDF",
+      "cat": "rules",
+      "title": {
+        "hu": "Adatkezelési tájékoztató tagoknak",
+        "en": "Privacy notice for members"
+      },
+      "meta": {
+        "hu": "2018. május · 4 oldal",
+        "en": "May 2018 · 4 pages"
+      },
+      "url": "assets/docs/adatkezelesi-tajekoztato-tagoknak.pdf"
+    },
+    {
+      "type": "PDF",
+      "cat": "rules",
+      "title": {
+        "hu": "Általános adatvédelmi szabályzat",
+        "en": "General data protection policy"
+      },
+      "meta": {
+        "hu": "2018. május · 22 oldal",
+        "en": "May 2018 · 22 pages"
+      },
+      "url": "assets/docs/adatvedelmi-szabalyzat.pdf"
+    },
+    {
+      "type": "PDF",
+      "cat": "forms",
+      "title": {
+        "hu": "Támogatási kérelem",
+        "en": "Support application form"
+      },
+      "meta": {
+        "hu": "Minden támogatáshoz ezt kell kitölteni · 1 oldal",
+        "en": "Required for every support claim · 1 page"
+      }
+    },
+    {
+      "type": "PDF",
+      "cat": "forms",
+      "title": {
+        "hu": "Kamatmentes kölcsön igénylőlap",
+        "en": "Interest-free loan application"
+      },
+      "meta": {
+        "hu": "Bizalmi vagy főbizalmi aláírásával · 1 oldal",
+        "en": "Signed by a shop steward · 1 page"
+      }
+    },
+    {
+      "type": "PDF",
+      "cat": "forms",
+      "title": {
+        "hu": "Jogfenntartói nyilatkozat",
+        "en": "Membership retention form"
+      },
+      "meta": {
+        "hu": "Nyugdíj, GYES/GYED idejére · 100 Ft/hó",
+        "en": "For retirement or parental leave · HUF 100/month"
+      }
+    },
+    {
+      "type": "PDF",
+      "cat": "forms",
+      "title": {
+        "hu": "Kilépési nyilatkozat",
+        "en": "Resignation form"
+      },
+      "meta": {
+        "hu": "A tagság megszüntetéséhez · 1 oldal",
+        "en": "To end your membership · 1 page"
+      }
+    },
+    {
+      "type": "PDF",
+      "cat": "forms",
+      "title": {
+        "hu": "Belépési nyilatkozat (Chinoin Zrt., Sanofi-Aventis Zrt.)",
+        "en": "Membership form (Chinoin Zrt., Sanofi-Aventis Zrt.)"
+      },
+      "meta": {
+        "hu": "Ajánld a kollégáidnak · 2 oldal",
+        "en": "Share it with colleagues · 2 pages"
+      },
+      "url": "assets/docs/belepesi-nyilatkozat-chinoin-sanofi.pdf"
+    },
+    {
+      "type": "PDF",
+      "cat": "forms",
+      "title": {
+        "hu": "Belépési nyilatkozat (más munkáltató, külső cég)",
+        "en": "Membership form (other employer, contractor)"
+      },
+      "meta": {
+        "hu": "A munkáltató nevét kézzel kell beírni · 2 oldal",
+        "en": "Fill in the employer's name by hand · 2 pages"
+      },
+      "url": "assets/docs/belepesi-nyilatkozat-kulso-ceg.pdf"
+    },
+    {
+      "type": "PDF",
+      "cat": "forms",
+      "title": {
+        "hu": "Pártoló tag belépési nyilatkozata",
+        "en": "Supporting member application"
+      },
+      "meta": {
+        "hu": "Ajánld a kollégáidnak · 2 oldal",
+        "en": "Share it with colleagues · 2 pages"
+      },
+      "url": "assets/docs/partoloi-belepesi-nyilatkozat.pdf"
+    },
+    {
+      "type": "PDF",
+      "cat": "useful",
+      "title": {
+        "hu": "Tájékoztató a pártolói tagságról",
+        "en": "About supporting membership"
+      },
+      "meta": {
+        "hu": "Kinek ajánljuk, mit kap, mennyibe kerül",
+        "en": "Who it's for, what it includes, what it costs"
+      }
+    }
+  ],
+  "locked": {
+    "contacts": 6
+  }
+}
