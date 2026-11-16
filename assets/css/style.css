@@ -1294,7 +1294,7 @@ input.in[type="color"] { padding: 6px; height: 46px; cursor: pointer; }
 .story { position: relative; background: var(--ink); color: var(--on-ink); }
 .story-stage { position: sticky; top: 0; height: 100vh; height: 100svh; margin-bottom: -100vh; margin-bottom: -100svh; overflow: hidden; pointer-events: none; }
 .story-stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
-.story-stage::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(14, 42, 51, .92) 0%, rgba(14, 42, 51, .55) 30%, rgba(14, 42, 51, 0) 52%); }
+.story-stage::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(11, 33, 41, .92) 0%, rgba(11, 33, 41, .55) 30%, rgba(11, 33, 41, 0) 52%); }
 .story-legend { position: absolute; left: 0; top: 0; z-index: 1; margin: 0; padding: 0; list-style: none; display: flex; gap: 22px; font-size: 12px; font-weight: 700; letter-spacing: .04em; color: var(--on-ink-muted); white-space: nowrap; opacity: 0; will-change: transform, opacity; }
 .story-legend li { display: flex; align-items: center; gap: 9px; }
 .story-legend i { flex: none; width: 18px; height: 0; border-top: 1.5px solid rgba(191, 233, 221, .55); }
@@ -1316,7 +1316,7 @@ input.in[type="color"] { padding: 6px; height: 46px; cursor: pointer; }
 .story:not(.story--js) .story-stage { display: none; }
 .story:not(.story--js) .story-step { min-height: 0; padding-block: 64px; }
 @media (max-width: 899px) {
-  .story-stage::after { background: linear-gradient(0deg, rgba(14, 42, 51, .96) 0%, rgba(14, 42, 51, .8) 34%, rgba(14, 42, 51, 0) 58%); }
+  .story-stage::after { background: linear-gradient(0deg, rgba(9, 30, 37, .96) 0%, rgba(9, 30, 37, .8) 34%, rgba(9, 30, 37, 0) 58%); }
   .story-step { align-items: flex-end; padding-block: 0 9vh; }
   .story-text { gap: 14px; min-width: 0; }
   .story-title { font-size: clamp(28px, 8.2vw, 52px); }
@@ -1479,3 +1479,18 @@ input.in[type="color"] { padding: 6px; height: 46px; cursor: pointer; }
 .story--js .story-dots i::after { content: ""; position: absolute; inset: -8px; }
 .story--js .story-dots i:hover { background: rgba(238, 248, 244, .5); }
 .story--js .story-dots i.on:hover { background: var(--accent); }
+
+/* Főoldal ritmusa: a tevékenységek világosak, a „720 pont” saját, mélyebb tónust kap */
+.perk-grid--light .perk { background: var(--surface); box-shadow: inset 0 0 0 1px var(--line-paper); }
+.perk-grid--light .perk p { color: var(--on-paper-muted); }
+.perk-grid--light .perk:hover { box-shadow: inset 0 0 0 1.5px var(--accent-deep), 0 24px 48px -28px rgba(14, 42, 51, .35); transform: translateY(-4px); }
+@media (min-width: 601px) and (max-width: 900px) { .perk-grid--light { grid-template-columns: 1fr 1fr; } }
+.story {
+  background:
+    radial-gradient(ellipse 55% 60% at 66% 52%, rgba(82, 191, 165, .10), transparent 70%),
+    radial-gradient(ellipse 90% 80% at 66% 50%, #17404c 0%, #0f2d37 55%, #081c23 100%);
+}
+.story::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 1px; z-index: 3; background: linear-gradient(90deg, transparent, rgba(82, 191, 165, .35), transparent); }
+@media (max-width: 899px) {
+  .story { background: radial-gradient(ellipse 120% 60% at 50% 34%, #17404c 0%, #0f2d37 55%, #081c23 100%); }
+}
