@@ -1494,3 +1494,15 @@ input.in[type="color"] { padding: 6px; height: 46px; cursor: pointer; }
 @media (max-width: 899px) {
   .story { background: radial-gradient(ellipse 120% 60% at 50% 34%, #17404c 0%, #0f2d37 55%, #081c23 100%); }
 }
+
+/* „720 pont”: kompaktabb, nem tölti ki a teljes képernyőt */
+.story--js { height: min(74vh, 720px); height: min(74svh, 720px); min-height: 500px; }
+.story--js .story-step { padding-block: 40px; }
+.story--js .story-title { font-size: clamp(34px, 4.2vw, 70px); }
+.story--js .story-text { gap: 18px; }
+.story--js .story-text p { font-size: clamp(16px, 1.15vw, 19px); }
+@media (max-width: 899px) {
+  .story--js { height: min(88svh, 680px); min-height: 560px; }
+  .story--js .story-step { padding-block: 0 40px; }
+  .story--js .story-title { font-size: clamp(26px, 7.4vw, 44px); }
+}

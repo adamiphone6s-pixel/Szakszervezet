@@ -108,7 +108,7 @@
     DPR = Math.min(Math.max(window.devicePixelRatio || 1, 1), 2);
     canvas.width = Math.round(W * DPR); canvas.height = Math.round(H * DPR);
     if (wide) { cx = W * 0.64; cy = H * 0.52; S = Math.min(W * 0.21, H * 0.33); }
-    else { cx = W / 2; cy = H * 0.34; S = Math.min(W * 0.4, H * 0.22); }
+    else { cx = W / 2; cy = H * 0.31; S = Math.min(W * 0.36, H * 0.2); }
   }
 
   // Pont-sprite: lágy fény, két színben
@@ -181,7 +181,7 @@
   let cur = 0, nxt = 1, clock = 0;   // clock: az aktuális fejezetben eltelt idő
   function holdOf(i) { return i === last ? HOLD_LAST : HOLD; }
   function tick(dt) {
-    if (intro < 1) { intro = Math.min(1, intro + dt / 3.6); return; }
+    if (intro < 1) intro = Math.min(1, intro + dt / 3.6);
     // Szünetben az álló fejezet nem lép tovább; egy elkezdett átúszás végigmegy.
     if (paused && clock < holdOf(cur)) return;
     clock += dt;
