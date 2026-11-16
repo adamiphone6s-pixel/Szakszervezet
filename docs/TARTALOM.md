@@ -56,3 +56,9 @@ A szövegek Tóth Éva anyagaiból készültek: az első csomag 2026. november 5
 ## Bemutató-belépés
 
 A demó tagi kódok csak a `login.html?demo` linken látszanak, a sima belépőoldalon nem. Évának ezt a linket kell küldeni. Amíg nincs éles háttér, a jelentkezési és a kapcsolati űrlap levelet állít össze a chinoinvdsz@gmail.com címre.
+
+## Ha változik egy szám
+
+- **Taglétszám:** az `index.html` `data-members` értéke (a „720 pont” történet pontjai és felirata), valamint az `i18n.js` `hero.loc` és `about.t4.d` kulcsa.
+- **Támogatási összegek:** az `i18n.js` `support.*` kulcsai (a lista) **és** az `assets/js/wizard.js` `ITEMS` táblája (a támogatás-kereső számol vele). A kettőt együtt kell átírni.
+- **Támogatás-kereső:** csak a nyilvános támogatási adatokból dolgozik, nem küld és nem tárol semmit. Ahol a szabályzat nem mond biztosat (pl. Opella-cégek és üdülés), ott a bizalmihoz irányít.

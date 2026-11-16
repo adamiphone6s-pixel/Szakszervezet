@@ -1,8 +1,8 @@
 /* Service worker: offline váz + friss adatok (network-first a /data alatt). */
-const CACHE = "vk-v17";
+const CACHE = "vk-v18";
 const SHELL = [
   "./", "index.html", "about.html", "services.html", "news.html", "join.html", "contact.html", "login.html", "portal.html", "privacy.html",
-  "assets/css/style.css?v=16", "assets/css/fonts.css?v=16", "assets/js/i18n.js?v=16", "assets/js/app.js?v=16", "assets/js/orb-gl.js?v=16", "assets/js/portal.js?v=16", "assets/js/backend.js?v=16",
+  "assets/css/style.css?v=18", "assets/css/fonts.css?v=18", "assets/js/i18n.js?v=18", "assets/js/app.js?v=18", "assets/js/story.js?v=18", "assets/js/wizard.js?v=18", "assets/js/orb-gl.js?v=18", "assets/js/portal.js?v=18", "assets/js/backend.js?v=18",
   "assets/vendor/gsap.min.js", "assets/vendor/ScrollTrigger.min.js", "assets/vendor/lenis.min.js",
   "assets/fonts/Unbounded-normal-latin.woff2", "assets/fonts/Manrope-normal-latin.woff2",
   "assets/img/icon.svg", "manifest.webmanifest"
