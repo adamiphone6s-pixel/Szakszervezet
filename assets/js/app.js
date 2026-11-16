@@ -691,7 +691,7 @@
 
   const SVG = {
     share: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M8 7l4-4 4 4"/><path d="M6 11H5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1h-1"/></svg>',
-    more: '<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>',
+    more: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>',
     add: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><rect x="3.5" y="3.5" width="17" height="17" rx="4"/><path d="M12 8v8M8 12h8"/></svg>',
     check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
     toggle: '<svg viewBox="0 0 24 24" fill="none"><rect x="2" y="6" width="20" height="12" rx="6" fill="currentColor" opacity=".35"/><circle cx="16" cy="12" r="4.4" fill="currentColor"/></svg>',
@@ -743,7 +743,7 @@
 
   // 1) iPhone Safari: a valódi telepítési lépések, az iOS-verziónak megfelelően
   function showSafariGuide() {
-    const modern = SAFARI_V >= 26; // iOS 26: a Megosztás a ⋯ menü alatt van
+    const modern = SAFARI_V >= 26; // iOS 26: a Megosztás a címsor bal oldali ☰ menüje alatt van
     const steps = IPAD
       ? [["share", t("install.ipad.s1")], ["add", t("install.ios.s2")], ["check", t("install.ios.s3")]]
       : modern
@@ -751,7 +751,7 @@
         : [["share", t("install.ios.s1")], ["add", t("install.ios.s2")], ["check", t("install.ios.s3")]];
     openGuide(head("install.ios") + stepList(steps) +
       '<button type="button" class="btn btn--volt btn--block" data-pwa-close>' + t("install.ok") + "</button>",
-      IPAD ? "" : modern ? "right" : "center");
+      IPAD ? "" : modern ? "left" : "center");
   }
 
   // 2) iPhone, nem Safari: átdobás Safariba, tartalék: link másolása
