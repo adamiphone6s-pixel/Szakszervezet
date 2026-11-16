@@ -55,7 +55,7 @@ A szövegek Tóth Éva anyagaiból készültek: az első csomag 2026. november 5
 
 ## Bemutató-belépés
 
-A demó tagi kódok csak a `login.html?demo` linken látszanak, a sima belépőoldalon nem. Évának ezt a linket kell küldeni. Amíg nincs éles háttér, a jelentkezési és a kapcsolati űrlap levelet állít össze a chinoinvdsz@gmail.com címre.
+Éva tesztelése miatt a demó-hozzáférés egyelőre **mindig látszik** a belépőoldalon: tagi kód `DEMO`, jelszó `demo1234` (a cégkódok, pl. `CH-1001`, ugyanezzel a jelszóval mennek). Elrejtés: az `assets/js/portal.js`-ben a kikommentelt `?demo`-feltételes sort kell visszakapcsolni. Amíg nincs éles háttér, a jelentkezési és a kapcsolati űrlap levelet állít össze a chinoinvdsz@gmail.com címre.
 
 ## Ha változik egy szám
 
