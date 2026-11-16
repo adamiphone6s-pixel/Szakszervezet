@@ -1519,7 +1519,6 @@ input.in[type="color"] { padding: 6px; height: 46px; cursor: pointer; }
 .svc-mini-item h3 { font-family: var(--font-body); font-size: 15.5px; font-weight: 700; letter-spacing: -0.01em; line-height: 1.25; }
 @media (max-width: 1000px) { .svc-strip .container { grid-template-columns: 1fr; } }
 @media (max-width: 720px) { .svc-mini { grid-template-columns: 1fr 1fr; } .svc-mini-item { padding: 14px; gap: 10px; } .svc-mini-ico { width: 34px; height: 34px; } .svc-mini-item h3 { font-size: 14px; } }
-.svc-strip { padding-top: 0; }
 #dokumentumok { padding-bottom: clamp(48px, 6vw, 88px); }
 .cta-next { margin: 32px auto 44px; max-width: 46ch; font-size: clamp(17px, 1.4vw, 21px); color: var(--on-ink-muted); }
 .cta-next b { display: block; margin-bottom: 8px; font-family: var(--font-display); font-weight: 700; font-size: clamp(26px, 2.6vw, 40px); letter-spacing: -0.04em; line-height: 1.05; color: var(--on-ink); }
