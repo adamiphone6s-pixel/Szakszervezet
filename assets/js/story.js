@@ -32,7 +32,7 @@
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
   let counted = reduce;
   function fill() {
-    sec.querySelectorAll("[data-story-t]").forEach((el) => {
+    document.querySelectorAll("[data-story-t]").forEach((el) => {
       const html = esc(t(el.dataset.storyT))
         .replace("{n}", '<span class="story-num">' + (counted ? N : 0) + "</span>")
         .replace("{next}", '<span class="story-num">' + (N + 1) + "</span>")
@@ -176,8 +176,8 @@
      a közepén gyorsabban úsznak. A szöveg a szakasz felénél vált. */
   const PERIOD = reduce ? 9 : 8;
   const last = steps.length - 1;
-  // Fejezet → alakzat: 1 gömb (720), 2 „100+”, 3 mag + gyűrűk, 4 gömb + új tag. A 0 (szétszórt) csak az intróban.
-  const SHAPE = [1, 2, 3, 4];
+  // Fejezet → alakzat: 1 gömb (720), 2 „100+”, 3 mag + gyűrűk. A 0 (szétszórt) csak az intróban. („Légy te a 721.” a Tartozz közénk szekcióban.)
+  const SHAPE = [1, 2, 3];
   let intro = reduce ? 1 : 0;   // 0→1: a pontok első összeállása
   let cur = 0, nxt = 1, clock = 0;
   const after = (i) => (i === last ? 0 : i + 1);
@@ -312,7 +312,8 @@
 
     // Az új tag (utolsó fejezet): egy pont beérkezik és csatlakozik
     let w5 = 0, fade5 = 1;
-    if (next === last) w5 = smooth(0.42, 1, local);
+    if (SHAPE[last] !== 4) { /* nincs „új tag” fejezet */ }
+    else if (next === last) w5 = smooth(0.42, 1, local);
     else if (k === last) { w5 = 1; fade5 = 1 - smooth(0.3, 0.55, local); }
     if (w5 > 0 && fade5 > 0.01) { ctx.save(); ctx.globalAlpha = fade5; drawNewcomer(time, ease(w5), fade5); ctx.restore(); }
     ctx.globalCompositeOperation = "source-over";
