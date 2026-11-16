@@ -175,9 +175,13 @@
      Az utolsó után visszatér az elejére. Csak akkor telik, ha a szekció látszik. */
   const HOLD = reduce ? 7 : 5.2, HOLD_LAST = reduce ? 10 : 9, TRANS = reduce ? 0.6 : 3.4;
   const last = steps.length - 1;
+  // Fejezet → alakzat: 1 gömb (720), 2 „100+”, 3 mag + gyűrűk, 4 gömb + új tag. A 0 (szétszórt) csak az intróban.
+  const SHAPE = [1, 2, 3, 4];
+  let intro = reduce ? 1 : 0;   // 0→1: a pontok első összeállása
   let cur = 0, nxt = 1, clock = 0;   // clock: az aktuális fejezetben eltelt idő
   function holdOf(i) { return i === last ? HOLD_LAST : HOLD; }
   function tick(dt) {
+    if (intro < 1) { intro = Math.min(1, intro + dt / 3.6); return; }
     // Szünetben az álló fejezet nem lép tovább; egy elkezdett átúszás végigmegy.
     if (paused && clock < holdOf(cur)) return;
     clock += dt;
@@ -230,13 +234,13 @@
     });
     const active = local > 0.5 ? next : k;
     if (active !== lastActive) { dots.forEach((d, i) => { d.classList.toggle("on", i === active); d.setAttribute("aria-current", i === active ? "step" : "false"); }); lastActive = active; }
-    if (active === 1) countUp();
+    if (active === 0 && intro > 0.6) countUp();
 
     ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
     ctx.clearRect(0, 0, W, H);
 
     // Gyűrűk (3. fejezet): ágazati és országos szövetség
-    const wR = weight(3);
+    const wR = weight(SHAPE.indexOf(3));
     if (wR > 0.01) drawRings(time, wR);
     else if (legend) legend.style.opacity = "0";
 
@@ -244,13 +248,15 @@
     ctx.globalCompositeOperation = "lighter";
     const R = 110;
     for (let i = 0; i < N; i++) {
-      shapePos(k, i, time, A);
+      shapePos(SHAPE[k], i, time, A);
       let x = A.x, y = A.y, s = A.s, a = A.a;
       if (tm > 0 && next !== k) {
-        shapePos(next, i, time, B);
+        shapePos(SHAPE[next], i, time, B);
         const tp = ease(clamp((tm - (i / N) * 0.35) / 0.65, 0, 1));
         x += (B.x - x) * tp; y += (B.y - y) * tp; s += (B.s - s) * tp; a += (B.a - a) * tp;
       }
+      // Első belépés: a szétszórt pontok összeállnak
+      if (intro < 1) { shapePos(0, i, time, B); const ti = ease(clamp((intro - (i / N) * 0.3) / 0.7, 0, 1)); x = B.x + (x - B.x) * ti; y = B.y + (y - B.y) * ti; s = B.s + (s - B.s) * ti; a = B.a + (a - B.a) * ti; }
       // egér
       let tx = 0, ty = 0;
       if (px > -9000) { const dx = x - px, dy = y - py, d2 = dx * dx + dy * dy; if (d2 < R * R) { const d = Math.sqrt(d2) || 1, push = (1 - d / R) * 26; tx = (dx / d) * push; ty = (dy / d) * push; } }
