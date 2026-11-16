@@ -76,8 +76,8 @@
       if (demo) demo.remove();
       B.currentMember().then((m) => { if (m) location.replace(m.company_id ? "portal.html" : "admin.html"); }).catch(() => {});
     } else {
-      // Bemutató mód: a demó-kódok csak a login.html?demo linken jelennek meg
-      if (!new URLSearchParams(location.search).has("demo")) { const demo = document.querySelector(".demo-box"); if (demo) demo.remove(); }
+      // Bemutató mód: a demó-kódok egyelőre mindig látszanak (Éva tesztelése miatt). Elrejtéshez: csak ?demo linken.
+      // if (!new URLSearchParams(location.search).has("demo")) { const demo = document.querySelector(".demo-box"); if (demo) demo.remove(); }
       if (getSession()) location.replace("portal.html");
     }
     const err = form.querySelector("[data-login-error]");
