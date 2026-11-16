@@ -119,11 +119,11 @@
     const g = c.getContext("2d"), h = SP / 2, gr = g.createRadialGradient(h, h, 0, h, h, h);
     const col = (a) => "rgba(" + rgb + "," + a + ")";
     gr.addColorStop(0, "rgba(255,255,255,1)");
-    gr.addColorStop(0.1, "rgba(255,255,255,0.98)");
-    gr.addColorStop(0.19, col(0.95));
-    gr.addColorStop(0.27, col(0.36));
-    gr.addColorStop(0.45, col(0.11));
-    gr.addColorStop(0.7, col(0.025));
+    gr.addColorStop(0.07, "rgba(255,255,255,0.98)");
+    gr.addColorStop(0.13, col(0.95));
+    gr.addColorStop(0.2, col(0.22));
+    gr.addColorStop(0.38, col(0.045));
+    gr.addColorStop(0.65, col(0.018));
     gr.addColorStop(1, col(0));
     g.fillStyle = gr; g.fillRect(0, 0, SP, SP); return c;
   }
@@ -151,48 +151,52 @@
       const p = scatter[i], dr = reduce ? 0 : 1;
       res.x = (p[0] + Math.sin(time * 0.17 * p[4] + p[3]) * 0.012 * dr) * W;
       res.y = (0.06 + p[1] * 0.88 + Math.cos(time * 0.13 * p[4] + p[3]) * 0.012 * dr) * H;
-      res.s = 1.3 + (p[2] + 1) * 0.9; res.a = 0.22 + (p[2] + 1) * 0.16;
+      res.s = 1.3 + (p[2] + 1) * 0.9; res.a = 0.22 + (p[2] + 1) * 0.16; res.e = 0;
       return;
     }
     if (shape === 1 || shape === 4) {
       const o = proj(ball[i], time * 0.11, 0.38, 1);
-      res.x = o.x; res.y = o.y; res.s = 2.5 * o.k; res.a = 0.3 + (1 - (o.z + 1) / 2) * 0.7;
+      res.x = o.x; res.y = o.y; res.s = 2.5 * o.k; res.a = 0.3 + (1 - (o.z + 1) / 2) * 0.7; res.e = 1 - Math.abs(o.z);
       return;
     }
     if (shape === 2) {
       const src = glyph || ball;
       const o = proj(src[i], glyph ? Math.sin(time * 0.35) * 0.12 : time * 0.11, glyph ? 0 : 0.38, 1);
-      res.x = o.x; res.y = o.y; res.s = 2.1 * o.k; res.a = 0.92;
+      res.x = o.x; res.y = o.y; res.s = 2.1 * o.k; res.a = 0.92; res.e = 0;
       return;
     }
     // 3: tömör mag a gyűrűk közepén
     const o = proj(core[i], time * 0.16, 0.38, 1);
-    res.x = o.x; res.y = o.y; res.s = 1.9 * o.k; res.a = 0.45 + (1 - (o.z + 1) / 2) * 0.55;
+    res.x = o.x; res.y = o.y; res.s = 1.9 * o.k; res.a = 0.45 + (1 - (o.z + 1) / 2) * 0.55; res.e = 1 - Math.abs(o.z) / 0.46;
   }
 
-  /* ---------- Idővonal: magától fut, görgetéstől független ----------
-     Minden fejezet HOLD másodpercig áll, majd TRANS alatt átúszik a következőbe.
-     Az utolsó után visszatér az elejére. Csak akkor telik, ha a szekció látszik. */
-  const HOLD = reduce ? 7 : 5.2, HOLD_LAST = reduce ? 10 : 9, TRANS = reduce ? 0.6 : 3.4;
+  /* ---------- Idővonal: folyamatosan mozog, görgetéstől független ----------
+     Nincs megállás: a pontok mindig úton vannak az egyik alakzatból a következőbe.
+     Egy szakasz PERIOD másodperc; az elején a pontok épp összeállnak (lassan),
+     a közepén gyorsabban úsznak. A szöveg a szakasz felénél vált. */
+  const PERIOD = reduce ? 9 : 8;
   const last = steps.length - 1;
   // Fejezet → alakzat: 1 gömb (720), 2 „100+”, 3 mag + gyűrűk, 4 gömb + új tag. A 0 (szétszórt) csak az intróban.
   const SHAPE = [1, 2, 3, 4];
   let intro = reduce ? 1 : 0;   // 0→1: a pontok első összeállása
-  let cur = 0, nxt = 1, clock = 0;   // clock: az aktuális fejezetben eltelt idő
-  function holdOf(i) { return i === last ? HOLD_LAST : HOLD; }
+  let cur = 0, nxt = 1, clock = 0;
+  const after = (i) => (i === last ? 0 : i + 1);
   function tick(dt) {
     if (intro < 1) intro = Math.min(1, intro + dt / 3.6);
-    // Szünetben az álló fejezet nem lép tovább; egy elkezdett átúszás végigmegy.
-    if (paused && clock < holdOf(cur)) return;
+    if (snapT > 0) snapT = Math.max(0, snapT - dt / 1.8);
+    if (paused) return;
     clock += dt;
-    if (clock >= holdOf(cur) + TRANS) { cur = nxt; nxt = cur === last ? 0 : cur + 1; clock = 0; }
+    if (clock >= PERIOD) { clock -= PERIOD; cur = nxt; nxt = after(cur); }
   }
-  // Ugrás egy fejezetre (pöttyre kattintva): rögtön átúszik oda
+  // Mindig mozgó görbe: a végpontokon is marad sebesség (min. 18%), középen gyorsul
+  const flow = (u) => u - 0.82 * Math.sin(u * 6.2832) / 6.2832;
+  // Ugrás egy fejezetre (pöttyre kattintva): a pontok a mostani helyükről úsznak át
+  const lastX = new Float32Array(N), lastY = new Float32Array(N), lastS = new Float32Array(N), lastA = new Float32Array(N);
+  const snX = new Float32Array(N), snY = new Float32Array(N), snS = new Float32Array(N), snA = new Float32Array(N);
+  let snapT = 0;
   function jump(i) {
-    if (i === cur && clock < holdOf(cur)) return;
-    if (clock >= holdOf(cur)) cur = nxt;   // épp átmenetben volt: a célból indulunk tovább
-    nxt = i; clock = holdOf(cur);
-    if (nxt === cur) { clock = 0; nxt = cur === last ? 0 : cur + 1; }
+    snX.set(lastX); snY.set(lastY); snS.set(lastS); snA.set(lastA); snapT = 1;
+    cur = i; nxt = after(i); clock = 0;
   }
   const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
   const smooth = (a, b, v) => { const x = clamp((v - a) / (b - a), 0, 1); return x * x * (3 - 2 * x); };
@@ -206,8 +210,40 @@
     stage.parentElement.addEventListener("pointerleave", () => { px = py = -9999; });
   }
 
+  /* ---------- Fényudvar + izzó perem: egyszer megrajzolva, utána csak bemásolva ---------- */
+  const glowCache = {};
+  function glowCanvas(rad, withRim) {
+    const key = Math.round(rad * DPR) + (withRim ? "r" : "");
+    if (glowCache[key]) return glowCache[key];
+    const pad = 30, sz = Math.ceil((rad * 1.2 + pad) * 2 * DPR), c = document.createElement("canvas");
+    c.width = c.height = sz;
+    const g = c.getContext("2d"), m = sz / 2;
+    g.scale(DPR, DPR);
+    const o = m / DPR, gr = g.createRadialGradient(o, o, 0, o, o, rad * 1.18);
+    gr.addColorStop(0, "rgba(82,191,165,0.07)");
+    gr.addColorStop(0.62, "rgba(82,191,165,0.035)");
+    gr.addColorStop(0.8, "rgba(82,191,165,0.11)");
+    gr.addColorStop(0.86, "rgba(150,230,210,0.07)");
+    gr.addColorStop(1, "rgba(82,191,165,0)");
+    g.fillStyle = gr; g.fillRect(0, 0, sz, sz);
+    if (withRim) {
+      g.shadowColor = "rgba(82,191,165,0.9)"; g.shadowBlur = 18;
+      g.strokeStyle = "rgba(120,220,195,0.34)"; g.lineWidth = 1.4;
+      g.beginPath(); g.arc(o, o, rad * 0.98, 0, Math.PI * 2); g.stroke();
+    }
+    const keys = Object.keys(glowCache); if (keys.length > 6) delete glowCache[keys[0]];
+    return (glowCache[key] = c);
+  }
+  function glow(rad, k2, withRim, br) {
+    if (k2 < 0.01) return;
+    const c = glowCanvas(rad, withRim), w = c.width / DPR;
+    ctx.globalAlpha = clamp(k2 * br, 0, 1);
+    ctx.drawImage(c, cx - w / 2, cy - w / 2, w, w);
+    ctx.globalAlpha = 1;
+  }
+
   /* ---------- Rajzolás ---------- */
-  const A = { x: 0, y: 0, s: 0, a: 0 }, B = { x: 0, y: 0, s: 0, a: 0 };
+  const A = { x: 0, y: 0, s: 0, a: 0, e: 0 }, B = { x: 0, y: 0, s: 0, a: 0, e: 0 };
   let lastActive = -1, lastNow = 0;
   function frame(now) {
     const dt = lastNow ? Math.min(0.1, (now - lastNow) / 1000) : 0;
@@ -215,24 +251,22 @@
     tick(dt);
     const time = reduce ? 0 : now / 1000;
     const k = cur, next = nxt;
-    const local = clamp((clock - holdOf(cur)) / TRANS, 0, 1);   // 0 = áll, 0→1 = átúszás
-    const tm = reduce ? (local < 0.5 ? 0 : 1) : local;
-    const te = smooth(0, 1, local);
+    const local = clock / PERIOD;
+    const te = reduce ? (local < 0.5 ? 0 : 1) : flow(local);
     const weight = (i) => (i === k ? 1 - te : 0) + (i === next ? te : 0);
+    const sw = 1 - (snapT * snapT * (3 - 2 * snapT));   // ugrás utáni ráúszás
 
-    // Szövegpanelek: a régi felfelé halványul, az új alulról érkezik
+    // Szövegpanelek: a szakasz felénél a régi felfelé halványul, az új alulról érkezik
     texts.forEach((el, i) => {
-      let o = 0, d = 0;
-      if (i === k) { o = clamp(1 - local * 1.8, 0, 1); d = local; }
-      if (i === next && local > 0) { o = Math.max(o, clamp((local - 0.4) / 0.6, 0, 1)); d = -(1 - clamp((local - 0.4) / 0.6, 0, 1)); }
-      if (i === k && i === next) { o = 1; d = 0; }
-      const oe = o * o * (3 - 2 * o);
-      el.style.opacity = oe.toFixed(3);
-      el.style.transform = reduce ? "" : "translate3d(0," + (-d * 28).toFixed(1) + "px,0)";
-      el.style.visibility = oe < 0.02 ? "hidden" : "visible";
-      el.style.pointerEvents = oe > 0.5 ? "auto" : "none";
+      let o = 0, dd = 0;
+      if (i === k) { o = 1 - smooth(0.36, 0.5, local); dd = smooth(0.36, 0.5, local); }
+      if (i === next) { const q = smooth(0.5, 0.66, local); if (q > o) { o = q; dd = -(1 - q); } }
+      el.style.opacity = o.toFixed(3);
+      el.style.transform = reduce ? "" : "translate3d(0," + (-dd * 26).toFixed(1) + "px,0)";
+      el.style.visibility = o < 0.02 ? "hidden" : "visible";
+      el.style.pointerEvents = o > 0.5 ? "auto" : "none";
     });
-    const active = local > 0.5 ? next : k;
+    const active = local < 0.5 ? k : next;
     if (active !== lastActive) { dots.forEach((d, i) => { d.classList.toggle("on", i === active); d.setAttribute("aria-current", i === active ? "step" : "false"); }); lastActive = active; }
     if (active === 0 && intro > 0.6) countUp();
 
@@ -246,31 +280,40 @@
 
     ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = "high";
     ctx.globalCompositeOperation = "lighter";
+    // Fényudvar a gömb mögött: belül halvány türkiz, a peremen erősebb gyűrű (üveges orb-hatás)
+    const wB = (weight(0) + weight(3)) * intro, wC = weight(SHAPE.indexOf(3)) * intro;
+    const br = reduce ? 1 : 0.85 + 0.15 * Math.sin(time * 0.9);
+    glow(S * 1.04, wB * wB, true, br); glow(S * 0.48, wC * wC, false, 1);
+
     const R = 110;
     for (let i = 0; i < N; i++) {
       shapePos(SHAPE[k], i, time, A);
-      let x = A.x, y = A.y, s = A.s, a = A.a;
-      if (tm > 0 && next !== k) {
+      let x = A.x, y = A.y, s = A.s, a = A.a, e = A.e;
+      if (te > 0 && SHAPE[next] !== SHAPE[k]) {
         shapePos(SHAPE[next], i, time, B);
-        const tp = ease(clamp((tm - (i / N) * 0.35) / 0.65, 0, 1));
-        x += (B.x - x) * tp; y += (B.y - y) * tp; s += (B.s - s) * tp; a += (B.a - a) * tp;
+        x += (B.x - x) * te; y += (B.y - y) * te; s += (B.s - s) * te; a += (B.a - a) * te; e += (B.e - e) * te;
       }
+      if (snapT > 0) { x = snX[i] + (x - snX[i]) * sw; y = snY[i] + (y - snY[i]) * sw; s = snS[i] + (s - snS[i]) * sw; a = snA[i] + (a - snA[i]) * sw; }
       // Első belépés: a szétszórt pontok összeállnak
-      if (intro < 1) { shapePos(0, i, time, B); const ti = ease(clamp((intro - (i / N) * 0.3) / 0.7, 0, 1)); x = B.x + (x - B.x) * ti; y = B.y + (y - B.y) * ti; s = B.s + (s - B.s) * ti; a = B.a + (a - B.a) * ti; }
+      if (intro < 1) { shapePos(0, i, time, B); const ti = ease(clamp((intro - (i / N) * 0.3) / 0.7, 0, 1)); x = B.x + (x - B.x) * ti; y = B.y + (y - B.y) * ti; s = B.s + (s - B.s) * ti; a = B.a + (a - B.a) * ti; e *= ti; }
+      lastX[i] = x; lastY[i] = y; lastS[i] = s; lastA[i] = a;
       // egér
       let tx = 0, ty = 0;
       if (px > -9000) { const dx = x - px, dy = y - py, d2 = dx * dx + dy * dy; if (d2 < R * R) { const d = Math.sqrt(d2) || 1, push = (1 - d / R) * 26; tx = (dx / d) * push; ty = (dy / d) * push; } }
       offX[i] += (tx - offX[i]) * 0.12; offY[i] += (ty - offY[i]) * 0.12;
       x += offX[i]; y += offY[i];
-      const r = s * 3.5 * jit[i];
+      const r = s * 4.3 * jit[i];
       ctx.globalAlpha = clamp(a * (reduce ? 1 : 0.86 + 0.14 * Math.sin(time * 1.3 + tw[i])), 0, 1);
       ctx.drawImage(accentIdx[i] ? SPR_ACC : SPR, x - r, y - r, r * 2, r * 2);
+      // Perem-fény: a gömb szélén lévő pontok türkizen izzanak (mint a hero orb pereme)
+      if (e > 0.7) { const q = (e - 0.7) / 0.3, rr = r * 1.9; ctx.globalAlpha = q * q * 0.75 * clamp(a + 0.35, 0, 1); ctx.drawImage(SPR_ACC, x - rr, y - rr, rr * 2, rr * 2); }
     }
     ctx.globalAlpha = 1;
 
     // Az új tag (utolsó fejezet): egy pont beérkezik és csatlakozik
     let w5 = 0, fade5 = 1;
-    if (k === last) { w5 = clamp((clock - 0.6) / 3.2, 0, 1); fade5 = 1 - te; }
+    if (next === last) w5 = smooth(0.42, 1, local);
+    else if (k === last) { w5 = 1; fade5 = 1 - smooth(0.3, 0.55, local); }
     if (w5 > 0 && fade5 > 0.01) { ctx.save(); ctx.globalAlpha = fade5; drawNewcomer(time, ease(w5), fade5); ctx.restore(); }
     ctx.globalCompositeOperation = "source-over";
   }
