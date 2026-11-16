@@ -1525,3 +1525,4 @@ input.in[type="color"] { padding: 6px; height: 46px; cursor: pointer; }
 .cta-next b { display: block; margin-bottom: 8px; font-family: var(--font-display); font-weight: 700; font-size: clamp(26px, 2.6vw, 40px); letter-spacing: -0.04em; line-height: 1.05; color: var(--on-ink); }
 .cta-next .story-num { color: var(--accent); }
 .cta-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
+.cta .cta-actions { margin-top: 48px; }
