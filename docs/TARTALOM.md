@@ -41,7 +41,7 @@ A szövegek Tóth Éva anyagaiból készültek: az első csomag 2026. november 5
 2. **Üdülési támogatás:** a szabályzat „Sanofi-cégcsoport és Euroapi” tagjait említi. Jár-e az Opella-cégeknél dolgozóknak?
 3. **Opella Healthcare Hungary:** nincs saját belépési nyilatkozata, most az üres „külső cég” változat szerepel. Az „Opella H.H Kft” nevű fájl valójában az Opella Healthcare Commercial Kft-nek szól.
 4. **Ügyvédi szöveg:** az anyag Euroapi-specifikus. Az oldalon általánosítva szerepel; meg kell erősíteni, hogy minden cégre igaz.
-5. **Elírásgyanús e-mail címek:** Hetényi Gergő → `gergo.veszelei@…`; `danile.molnar-ujp@…`.
+5. **Elírásgyanús e-mail címek:** két bizalmi címe a `private/companies/euroapi-hungary.json`-ban (a részletek a gitben nem szereplő `docs/LEVEL_EVANAK.md`-ben).
 6. **2018-as GDPR-tájékoztató:** freemail-cím és a NAIH régi címe szerepel benne. Az oldal a NAIH mostani címét használja (Falk Miksa u. 9–11.). Érdemes frissíteni a PDF-et.
 7. **Weboldal-adatkezelési tájékoztató** (`privacy.body`): a megőrzési idők és az EU-s adatközpont vállalása tervezet, jóvá kell hagyni.
 8. **Csanyikvölgy:** 5 bizalminak nincs e-mail címe („Elérhető a munkahelyén” szerepel). Melyik KSZ vonatkozik rájuk? Most a Sanofié.

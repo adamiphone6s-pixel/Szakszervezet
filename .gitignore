@@ -5,3 +5,6 @@ node_modules/
 # Valódi tagi tartalom (bizalmik, KSZ, belső nyomtatványok) — SOHA nem kerül a repóba / nyilvános deployba.
 # Élesítéskor az admin felületen kerül fel a privát Supabase-tárba (docs/SETUP.md).
 private/
+
+# Évának szóló levél: bizalmik nevét/címét tartalmazza, nyilvános repóba nem kerülhet
+docs/LEVEL_EVANAK.md
