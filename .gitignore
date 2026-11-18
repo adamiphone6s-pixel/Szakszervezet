@@ -7,4 +7,4 @@ node_modules/
 private/
 
 # Évának szóló levél: bizalmik nevét/címét tartalmazza, nyilvános repóba nem kerülhet
-docs/LEVEL_EVANAK.md
+docs/LEVEL_EVANAK*.md
